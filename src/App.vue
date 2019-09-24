@@ -66,28 +66,7 @@ export default {
       // this.hover = null
 
       const { order, id } = e.target.closest('li').dataset
-      console.log({
-        id,
-        order,
-        groupName,
-        draggingCard: this.draggingCard,
-        groupIndex: this.draggingCard.groupIndex
-      })
-
-      // this.data = [ ...this.data ].map(card => card.id === this.draggingCard.id ? { ...card, groupName } : card)
-      // this.data[0].group = groupName
-
-      // remover da lista atual
-      this.data = this.data.reduce((acc, { group, cards }) => {
-        if (group === this.draggingCard.group) {
-          return cards.filter(card => card.id === this.draggingCard.id)
-        }
-
-        return acc
-      }, [])
-      // .filter(card => console.log(card, this.draggingCard.id) || card.id === this.draggingCard.id))
-
-      // console.log(this.data[this.draggingCard.groupIndex].cards.splice(1, 0))
+      console.log(order, id)
 
       this.draggingCard = {}
     }
