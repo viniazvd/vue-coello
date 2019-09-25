@@ -99,12 +99,29 @@ export default {
 
       const { groupOrder: targetGroupOrder } = e.target.closest('ul').dataset
       const { cardOrder: targetCardOrder } = e.target.closest('li').dataset
+      const target = e.target.closest('li')
+
+      const draggedGroupIndex = this.draggedCard.groupOrder
+      const targetGroupIndex = +targetGroupOrder
+
+      const draggedIndex = this.draggedCard.cardOrder
+      const targetIndex = +targetCardOrder
+
+      const targetSize = target.getBoundingClientRect()
+      const targetCenter = (targetSize.bottom - targetSize.top) / 2
+      console.log(targetCenter)
+
+      // const draggedOffset = monitor.getClientOffset()
+      // const draggedTop = draggedOffset.y - targetSize.top
+
+      if (draggedIndex === targetIndex && draggedGroupIndex === targetGroupIndex) return
+      // if (draggedIndex > targetIndex && draggedTop > targetCenter) return
 
       console.log({
-        draggedGroupOrder: this.draggedCard.groupOrder,
-        targetGroupOrder: +targetGroupOrder,
-        draggedCardOrder: this.draggedCard.cardOrder,
-        targetCardOrder: +targetCardOrder
+        draggedGroupIndex,
+        targetGroupIndex,
+        draggedIndex,
+        targetIndex
       })
     }
   }
