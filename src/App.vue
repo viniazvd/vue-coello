@@ -3,7 +3,7 @@
     <ul
       v-for="(groupName, groupOrder) of groups"
       :key="groupName"
-      :data-groupOrder="groupOrder"
+      :data-group-order="groupOrder"
       draggable="true"
     >
 
@@ -13,8 +13,7 @@
         <li
           v-for="card of getCards(groupName)"
           :key="card.id"
-          :data-id="card.id"
-          :data-cardOrder="card.order"
+          :data-card-order="card.order"
           draggable="true"
           @drop="e => onDragDrop(e, groupName)"
           @dragstart="onDragStart(card, groupName, groupOrder)"
@@ -98,8 +97,8 @@ export default {
     onDragOver (e, draggedGroupOrder, draggedCardOrder) {
       // this.hover = card
 
-      const { grouporder: targetGroupOrder } = e.target.closest('ul').dataset
-      const { cardorder: targetCardOrder } = e.target.closest('li').dataset
+      const { groupOrder: targetGroupOrder } = e.target.closest('ul').dataset
+      const { cardOrder: targetCardOrder } = e.target.closest('li').dataset
 
       console.log({
         draggedGroupOrder: this.draggedCard.groupOrder,
