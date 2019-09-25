@@ -1,6 +1,6 @@
 <template>
   <div id="app" class="board">
-    <ul v-for="(groupName, groupIndex) of groups" :key="groupName">
+    <ul v-for="(groupName, groupOrder) of groups" :key="groupName">
 
       <header>{{ groupName }}</header>
       <slot>
@@ -11,7 +11,7 @@
           :data-id="card.id"
           :data-order="card.order"
           draggable="true"
-          @dragstart="e => dragStart(e, card, groupName, groupIndex)"
+          @dragstart="dragStart(card, groupName, groupOrder)"
           @dragover="e => dragOver(e, card)"
           @drop="e => dragDrop(e, groupName)"
         >
@@ -32,13 +32,12 @@ export default {
     return {
       data: data,
       // hover: null,
-      draggingCard: {}
+      draggedCard: {}
     }
   },
 
   computed: {
     groups () {
-      console.log('computed')
       return data.map(({ group }) => group)
     }
   },
@@ -48,11 +47,37 @@ export default {
       return this.data.find(({ group }) => group === groupName).cards
     },
 
-    dragStart (e, card, groupName, groupIndex) {
-      this.draggingCard = {
+    removeCard (data) {
+      const { id: draggedId, group: draggedGroup } = this.draggedCard
+
+      if (data.group === draggedGroup) {
+        return {
+          ...data,
+          cards: data.cards.filter(card => card.id !== draggedId)
+        }
+        return
+      }
+
+      return data
+    },
+
+    addCard (data, targetGroup) {
+      if (data.group === targetGroup) {
+        return {
+          ...data,
+          cards: [ ...data.cards, this.draggedCard ]
+        }
+        return
+      }
+
+      return data
+    },
+
+    dragStart (card, targetGroup, targetOrder) {
+      this.draggedCard = {
         ...card,
-        groupIndex,
-        group: groupName
+        order: targetOrder,
+        group: targetGroup
       }
     },
 
@@ -62,13 +87,15 @@ export default {
       e.preventDefault()
     },
 
-    dragDrop (e, groupName) {
+    dragDrop (e, targetGroup) {
       // this.hover = null
-
       const { order, id } = e.target.closest('li').dataset
-      console.log(order, id)
 
-      this.draggingCard = {}
+      this.data = this.data
+        .map(this.removeCard)
+        .map(data => this.addCard(data, targetGroup))
+
+      this.draggedCard = {}
     }
   }
 }
