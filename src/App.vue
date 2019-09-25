@@ -111,9 +111,6 @@ export default {
       const targetCenter = (targetSize.bottom - targetSize.top) / 2
       console.log(targetCenter)
 
-      // const draggedOffset = monitor.getClientOffset()
-      // const draggedTop = draggedOffset.y - targetSize.top
-
       if (draggedIndex === targetIndex && draggedGroupIndex === targetGroupIndex) return
       // if (draggedIndex > targetIndex && draggedTop > targetCenter) return
 
