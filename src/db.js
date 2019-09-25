@@ -17,6 +17,21 @@ export default [
         id: 3,
         order: 3,
         task: 'task 13'
+      },
+      {
+        id: 4,
+        order: 4,
+        task: 'task 14'
+      },
+      {
+        id: 5,
+        order: 5,
+        task: 'task 15'
+      },
+      {
+        id: 6,
+        order: 6,
+        task: 'task 16'
       }
     ]
   },
@@ -24,23 +39,7 @@ export default [
   {
     group: 'todo',
     order: 2,
-    cards: [
-      {
-        id: 4,
-        order: 1,
-        task: 'task 21'
-      },
-      {
-        id: 5,
-        order: 2,
-        task: 'task 22'
-      },
-      {
-        id: 6,
-        order: 3,
-        task: 'task 23'
-      }
-    ]
+    cards: []
   },
 
   {
