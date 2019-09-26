@@ -2,7 +2,8 @@ export function getClosest (e, el) {
   return e.target.closest(el)
 }
 
-function insert (arr, index, newItem) {
+export function insertCard (arr, index, newItem) {
+  console.log(arr, index)
   return [
     ...arr.slice(0, index), // part of the array before the specified index
     newItem,                // inserted item

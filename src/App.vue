@@ -28,7 +28,7 @@
 
 <script>
 import data from './db'
-import { getClosest, removeCard, addCard, insert } from './services'
+import { getClosest, removeCard, addCard, insertCard } from './services'
 
 export default {
   name: 'vue-coe-dnd',
@@ -38,19 +38,13 @@ export default {
       data: data,
       isDragging: {},
       draggedCard: {},
-      draggedOrder: null
+      draggedGroupOrder: null
     }
   },
 
   computed: {
     groups () {
       return data.map(({ group }) => group)
-    },
-
-    draggedGroupOrder () {
-      if (!this.draggedCard) return null
-
-      return this.draggedCard.groupOrder
     },
 
     draggedCardOrder () {
@@ -85,7 +79,7 @@ export default {
 
     onDragStart (card, draggedGroupOrder) {
       this.draggedCard = card
-      this.draggedOrder = draggedGroupOrder
+      this.draggedGroupOrder = draggedGroupOrder
     },
 
     onDragDrop (e, card) {
@@ -96,9 +90,16 @@ export default {
 
       const { targetCenter, draggedOffsetTop } = this.getTargetRect(e)
 
+      // console.log(this.draggedCardOrder, targetCardOrder, this.draggedGroupOrder, targetGroupOrder)
+      // console.log(this.draggedGroupOrder, targetGroupOrder, draggedOffsetTop, targetCenter)
       if (this.draggedCardOrder === targetCardOrder && this.draggedGroupOrder === targetGroupOrder) return
-      if (this.draggedCardOrder < targetCardOrder && draggedOffsetTop < targetCenter) return
-      if (this.draggedCardOrder > targetCardOrder && draggedOffsetTop > targetCenter) return
+
+      if(draggedIndex < targetIndex && draggedTop < targetCenter){
+      if (this.draggedCardOrder === targetCardOrder && draggedOffsetTop > targetCenter) return
+
+      if(draggedIndex > targetIndex && draggedTop > targetCenter){
+      if (this.draggedCardOrder === targetCardOrder && draggedOffsetTop > targetCenter) return
+      console.log('dasdsadasdasda')
 
       // console.log({
       //   draggedGroupOrder,
@@ -110,23 +111,29 @@ export default {
       // this.data[this.draggedCardOrder].cards.splice(this.targetCardIndex, 1)
       // this.data[this.draggedGroupOrder].cards.splice(this.targetGroupIndex, 0, this.draggedCard)
 
+      const isAbove = draggedOffsetTop < targetCenter
       const { id } = this.draggedCard
 
-      this.data = this.data
-        .reduce((acc, group) => {
-          if (group.order === this.draggedOrder) {
-            const filterGroup = {
-              ...group,
-              cards: group.cards.filter(card => card.id !== id)
+      this.data = [ ...this.data ]
+        .map(c => {
+          if (c.order === this.draggedOrder) {
+            return {
+              ...c,
+              cards: c.cards.filter(card => card.id !== id)
             }
-
-            acc = [ ...acc, filterGroup ]
           }
-
+          return c
+        })
+        .reduce((acc, group) => {
           if (group.order === targetGroupOrder) {
             const newGroups = {
               ...group,
-              cards: [ ...group.cards, this.draggedCard ]
+              cards: insertCard(group.cards, isAbove ? targetCardOrder - 1 : targetCardOrder, this.draggedCard).map((coe, i) => {
+                return {
+                  ...coe,
+                  order: i + 1
+                }
+              })
             }
 
             acc = [ ...acc, newGroups ]
