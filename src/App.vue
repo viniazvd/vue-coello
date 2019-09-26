@@ -3,7 +3,7 @@
     <ul
       v-for="(groupName, groupOrder) of groups"
       :key="groupName"
-      :data-group-order="groupOrder"
+      :data-group-order="groupOrder + 1"
       draggable="true"
     >
 
@@ -15,9 +15,9 @@
           :data-card-order="card.order"
           :class="{ '--is-dragging': card.id === isDragging.id }"
           draggable="true"
-          @drop="e => onDragDrop(e, groupName)"
-          @dragstart="onDragStart(card, groupName, groupOrder)"
-          @dragover.prevent="e => onDragOver(e, card, groupOrder, card.order, groupName)"
+          @drop="e => onDragDrop(e, card)"
+          @dragstart="onDragStart(card, groupOrder + 1)"
+          @dragover.prevent="e => onDragOver(card)"
         >
           <main>{{ card.task }}</main>
         </li>
@@ -37,13 +37,26 @@ export default {
     return {
       data: data,
       isDragging: {},
-      draggedCard: {}
+      draggedCard: {},
+      draggedOrder: null
     }
   },
 
   computed: {
     groups () {
       return data.map(({ group }) => group)
+    },
+
+    draggedGroupOrder () {
+      if (!this.draggedCard) return null
+
+      return this.draggedCard.groupOrder
+    },
+
+    draggedCardOrder () {
+      if (!this.draggedCard) return null
+
+      return this.draggedCard.order
     }
   },
 
@@ -52,55 +65,85 @@ export default {
       return this.data.find(({ group }) => group === groupName).cards
     },
 
-    onDragStart (card, targetGroupName, targetOrder) {
-      this.draggedCard = {
-        ...card,
-        cardOrder: card.order,
-        groupOrder: targetOrder,
-        group: targetGroupName
+    getTargetOrder (e, el, prop) {
+      const target = getClosest(e, el)
+
+      const { [prop]: targetOrder } = target.dataset
+
+      return targetOrder
+    },
+
+    getTargetRect (e) {
+      const __card = getClosest(e, 'li')
+      const { top: targetCardTop, bottom: targetCardBottom } = __card.getBoundingClientRect()
+
+      return {
+        targetCenter: Math.ceil((targetCardBottom - targetCardTop) / 2),
+        draggedOffsetTop: Math.ceil(e.clientY - targetCardTop)
       }
     },
 
-    onDragDrop (e, targetGroup) {
-      console.log('DROP')
-
-      this.isDragging = {}
-      this.draggedCard = {}
+    onDragStart (card, draggedGroupOrder) {
+      this.draggedCard = card
+      this.draggedOrder = draggedGroupOrder
     },
 
-    onDragOver (e, card, draggedGroupOrder, draggedCardOrder, groupName) {
-      this.isDragging = card
+    onDragDrop (e, card) {
+      console.log('DROP')
 
-      const __card = getClosest(e, 'li')
-      const __group = getClosest(e, 'ul')
+      const targetCardOrder = +this.getTargetOrder(e, 'li', 'cardOrder')
+      const targetGroupOrder = +this.getTargetOrder(e, 'ul', 'groupOrder')
 
-      const { cardOrder: targetCardOrder } = __card.dataset
-      const { groupOrder: targetGroupOrder } = __group.dataset
+      const { targetCenter, draggedOffsetTop } = this.getTargetRect(e)
 
-      const draggedGroupIndex = this.draggedCard.groupOrder
-      const targetGroupIndex = +targetGroupOrder
-
-      const draggedCardIndex = this.draggedCard.cardOrder
-      const targetCardIndex = +targetCardOrder
-
-      const { top: targetCardTop, bottom: targetCardBottom } = __card.getBoundingClientRect()
-      const targetCenter = Math.ceil((targetCardBottom - targetCardTop) / 2)
-
-      const draggedOffsetTop = Math.ceil(e.clientY - targetCardTop)
-
-      if (draggedCardIndex === targetCardIndex && draggedGroupIndex === targetGroupIndex) return
-      if (draggedCardIndex < targetCardIndex && draggedOffsetTop < targetCenter) return
-      if (draggedCardIndex > targetCardIndex && draggedOffsetTop > targetCenter) return
+      if (this.draggedCardOrder === targetCardOrder && this.draggedGroupOrder === targetGroupOrder) return
+      if (this.draggedCardOrder < targetCardOrder && draggedOffsetTop < targetCenter) return
+      if (this.draggedCardOrder > targetCardOrder && draggedOffsetTop > targetCenter) return
 
       // console.log({
-      //   draggedGroupIndex,
+      //   draggedGroupOrder,
       //   targetGroupIndex,
-      //   draggedCardIndex,
+      //   draggedCardOrder,
       //   targetCardIndex
       // })
 
-      this.data[draggedCardIndex].cards.splice(targetCardIndex, 1)
-      this.data[draggedGroupIndex].cards.splice(targetGroupIndex, 0, this.draggedCard)
+      // this.data[this.draggedCardOrder].cards.splice(this.targetCardIndex, 1)
+      // this.data[this.draggedGroupOrder].cards.splice(this.targetGroupIndex, 0, this.draggedCard)
+
+      const { id } = this.draggedCard
+
+      this.data = this.data
+        .reduce((acc, group) => {
+          if (group.order === this.draggedOrder) {
+            const filterGroup = {
+              ...group,
+              cards: group.cards.filter(card => card.id !== id)
+            }
+
+            acc = [ ...acc, filterGroup ]
+          }
+
+          if (group.order === targetGroupOrder) {
+            const newGroups = {
+              ...group,
+              cards: [ ...group.cards, this.draggedCard ]
+            }
+
+            acc = [ ...acc, newGroups ]
+          } else {
+            acc = [ ...acc, group ]
+          }
+
+          return acc
+        }, [])
+
+      this.isDragging = {}
+      this.draggedCard = {}
+      this.draggedOrder = null
+    },
+
+    onDragOver (card) {
+      this.isDragging = card
     }
   }
 }
