@@ -9,15 +9,15 @@
 
       <header>{{ groupName }}</header>
       <slot>
-        <!-- :class="{ 'is-hovering': card == hover }" -->
         <li
           v-for="card of getCards(groupName)"
           :key="card.id"
           :data-card-order="card.order"
+          :class="{ '--is-dragging': card.id === isDragging.id }"
           draggable="true"
           @drop="e => onDragDrop(e, groupName)"
           @dragstart="onDragStart(card, groupName, groupOrder)"
-          @dragover.prevent="e => onDragOver(e, card, groupOrder, card.order)"
+          @dragover.prevent="e => onDragOver(e, card, groupOrder, card.order, groupName)"
         >
           <main>{{ card.task }}</main>
         </li>
@@ -28,6 +28,7 @@
 
 <script>
 import data from './db'
+import { getClosest, removeCard, addCard, insert } from './services'
 
 export default {
   name: 'vue-coe-dnd',
@@ -35,7 +36,7 @@ export default {
   data () {
     return {
       data: data,
-      // hover: {},
+      isDragging: {},
       draggedCard: {}
     }
   },
@@ -51,30 +52,6 @@ export default {
       return this.data.find(({ group }) => group === groupName).cards
     },
 
-    removeCard (data) {
-      const { id: draggedId, group: draggedGroupName } = this.draggedCard
-
-      if (data.group === draggedGroupName) {
-        return {
-          ...data,
-          cards: data.cards.filter(card => card.id !== draggedId)
-        }
-      }
-
-      return data
-    },
-
-    addCard (data, targetGroup) {
-      if (data.group === targetGroup) {
-        return {
-          ...data,
-          cards: [ ...data.cards, this.draggedCard ]
-        }
-      }
-
-      return data
-    },
-
     onDragStart (card, targetGroupName, targetOrder) {
       this.draggedCard = {
         ...card,
@@ -85,47 +62,53 @@ export default {
     },
 
     onDragDrop (e, targetGroup) {
-      // this.hover = {}
+      console.log('DROP')
 
-      this.data = this.data
-        .map(this.removeCard)
-        .map(data => this.addCard(data, targetGroup))
-
+      this.isDragging = {}
       this.draggedCard = {}
     },
 
-    onDragOver (e, draggedGroupOrder, draggedCardOrder) {
-      // this.hover = card
+    onDragOver (e, card, draggedGroupOrder, draggedCardOrder, groupName) {
+      this.isDragging = card
 
-      const { groupOrder: targetGroupOrder } = e.target.closest('ul').dataset
-      const { cardOrder: targetCardOrder } = e.target.closest('li').dataset
-      const target = e.target.closest('li')
+      const __card = getClosest(e, 'li')
+      const __group = getClosest(e, 'ul')
+
+      const { cardOrder: targetCardOrder } = __card.dataset
+      const { groupOrder: targetGroupOrder } = __group.dataset
 
       const draggedGroupIndex = this.draggedCard.groupOrder
       const targetGroupIndex = +targetGroupOrder
 
-      const draggedIndex = this.draggedCard.cardOrder
-      const targetIndex = +targetCardOrder
+      const draggedCardIndex = this.draggedCard.cardOrder
+      const targetCardIndex = +targetCardOrder
 
-      const targetSize = target.getBoundingClientRect()
-      const targetCenter = (targetSize.bottom - targetSize.top) / 2
-      console.log(targetCenter)
+      const { top: targetCardTop, bottom: targetCardBottom } = __card.getBoundingClientRect()
+      const targetCenter = Math.ceil((targetCardBottom - targetCardTop) / 2)
 
-      if (draggedIndex === targetIndex && draggedGroupIndex === targetGroupIndex) return
-      // if (draggedIndex > targetIndex && draggedTop > targetCenter) return
+      const draggedOffsetTop = Math.ceil(e.clientY - targetCardTop)
 
-      console.log({
-        draggedGroupIndex,
-        targetGroupIndex,
-        draggedIndex,
-        targetIndex
-      })
+      if (draggedCardIndex === targetCardIndex && draggedGroupIndex === targetGroupIndex) return
+      if (draggedCardIndex < targetCardIndex && draggedOffsetTop < targetCenter) return
+      if (draggedCardIndex > targetCardIndex && draggedOffsetTop > targetCenter) return
+
+      // console.log({
+      //   draggedGroupIndex,
+      //   targetGroupIndex,
+      //   draggedCardIndex,
+      //   targetCardIndex
+      // })
+
+      this.data[draggedCardIndex].cards.splice(targetCardIndex, 1)
+      this.data[draggedGroupIndex].cards.splice(targetGroupIndex, 0, this.draggedCard)
     }
   }
 }
 </script>
 
 <style lang="scss">
+* { box-sizing: border-box; }
+
 html, body {
   margin: 0;
   border: 0;
@@ -143,6 +126,7 @@ html, body {
     list-style-type: none;
 
     height: 100%;
+    margin: 0;
     padding: 0 15px;
     flex: 0 0 320px;
 
@@ -152,8 +136,16 @@ html, body {
       margin-right: 20px;
       border: 1px solid red;
 
-      &.is-hovering {
-        margin-top: 100px;
+      &.--is-dragging {
+        // margin-top: 100px;
+        border: 2px dashed rgba(0, 0, 0, 0.2);
+        padding-top: 31px;
+        border-radius: 0;
+        background: transparent;
+        box-shadow: none;
+        cursor: grabbing;
+
+        main { opacity: 0; }
       }
     }
   }
