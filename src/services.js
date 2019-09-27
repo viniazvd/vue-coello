@@ -2,7 +2,7 @@ export function getClosest (e, el) {
   return e.target.closest(el)
 }
 
-export function getInsertIndex (draggedOffsetTop, targetCenter, draggedGroupOrder, targetGroupOrder, targetCardOrder) {
+function getInsertIndex (draggedOffsetTop, targetCenter, draggedGroupOrder, targetGroupOrder, targetCardOrder) {
   const isAbove = draggedOffsetTop < targetCenter
   const isSameGroup = draggedGroupOrder === targetGroupOrder
 
@@ -19,7 +19,7 @@ function insertCard (data, index, card) {
   ]
 }
 
-export function removeCard (data, draggedGroupOrder, draggedCard) {
+function removeCard (data, draggedGroupOrder, draggedCard) {
   if (data.order === draggedGroupOrder) {
     return {
       ...data,
