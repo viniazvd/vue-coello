@@ -115,9 +115,7 @@ export default {
         targetCardOrder
       )
 
-      this.isDragging = {}
-      this.draggedCard = {}
-      this.draggedOrder = null
+      this.resetDraggableData()
     },
 
     onDragOver (card) {
