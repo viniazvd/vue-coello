@@ -2,35 +2,49 @@ export function getClosest (e, el) {
   return e.target.closest(el)
 }
 
-export function insertCard (arr, index, newItem) {
-  console.log(arr, index)
+export function getInsertIndex (draggedOffsetTop, targetCenter, draggedGroupOrder, targetGroupOrder, targetCardOrder) {
+  const isAbove = draggedOffsetTop < targetCenter
+  const isSameGroup = draggedGroupOrder === targetGroupOrder
+
+  if (isSameGroup) return targetCardOrder - 1
+
+  return isAbove ? targetCardOrder - 1 : targetCardOrder
+}
+
+function insertCard (data, index, card) {
   return [
-    ...arr.slice(0, index), // part of the array before the specified index
-    newItem,                // inserted item
-    ...arr.slice(index)     // part of the array after the specified index
+    ...data.slice(0, index), // before index
+    card,                    // inserted card
+    ...data.slice(index)     // after index
   ]
 }
 
-export function addCard (data, _card, card, targetIndex, targetGroup) {
-  if (_card.group === targetGroup) {
+export function removeCard (data, draggedGroupOrder, draggedCard) {
+  if (data.order === draggedGroupOrder) {
     return {
       ...data,
-      cards: insert(data.cards, targetIndex, card)
+      cards: data.cards.filter(card => card.id !== draggedCard.id)
     }
   }
-
-  return _card
+  return data
 }
 
-export function removeCard (data, draggedCard) {
-  const { id: draggedId, group: draggedGroupName } = draggedCard
-
-  if (data.group === draggedGroupName) {
-    return {
-      ...data,
-      cards: data.cards.filter(card => card.id !== draggedId)
+export function move (acc, group, targetGroupOrder, insertIndex, draggedCard) {
+  if (group.order === targetGroupOrder) {
+    const newGroups = {
+      ...group,
+      cards: insertCard(group.cards, insertIndex, draggedCard).map((coe, i) => {
+        return {
+          ...coe,
+          order: i + 1
+        }
+      })
     }
+
+    acc = [ ...acc, newGroups ]
+  } else {
+    acc = [ ...acc, group ]
   }
 
-  return data
+  return acc
 }

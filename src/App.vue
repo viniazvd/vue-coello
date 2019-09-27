@@ -28,7 +28,12 @@
 
 <script>
 import data from './db'
-import { getClosest, removeCard, addCard, insertCard } from './services'
+import {
+  move,
+  removeCard,
+  getClosest,
+  getInsertIndex
+} from './services'
 
 export default {
   name: 'vue-coe-dnd',
@@ -83,66 +88,45 @@ export default {
     },
 
     onDragDrop (e, card) {
-      console.log('DROP')
-
       const targetCardOrder = +this.getTargetOrder(e, 'li', 'cardOrder')
       const targetGroupOrder = +this.getTargetOrder(e, 'ul', 'groupOrder')
 
       const { targetCenter, draggedOffsetTop } = this.getTargetRect(e)
 
-      // console.log(this.draggedCardOrder, targetCardOrder, this.draggedGroupOrder, targetGroupOrder)
-      // console.log(this.draggedGroupOrder, targetGroupOrder, draggedOffsetTop, targetCenter)
-      if (this.draggedCardOrder === targetCardOrder && this.draggedGroupOrder === targetGroupOrder) return
+      if (this.draggedCardOrder === targetCardOrder && this.draggedGroupOrder === targetGroupOrder) {
+        this.isDragging = {}
+        this.draggedCard = {}
+        this.draggedOrder = null
+        return
+      }
 
-      if(draggedIndex < targetIndex && draggedTop < targetCenter){
-      if (this.draggedCardOrder === targetCardOrder && draggedOffsetTop > targetCenter) return
+      if (this.draggedGroupOrder === targetGroupOrder) {
+        if (this.draggedCardOrder < targetCardOrder && draggedOffsetTop < targetCenter) {
+          this.isDragging = {}
+          this.draggedCard = {}
+          this.draggedOrder = null
+          return
+        }
 
-      if(draggedIndex > targetIndex && draggedTop > targetCenter){
-      if (this.draggedCardOrder === targetCardOrder && draggedOffsetTop > targetCenter) return
-      console.log('dasdsadasdasda')
+        if (this.draggedCardOrder > targetCardOrder && draggedOffsetTop > targetCenter) {
+          this.isDragging = {}
+          this.draggedCard = {}
+          this.draggedOrder = null
+          return
+        }
+      }
 
-      // console.log({
-      //   draggedGroupOrder,
-      //   targetGroupIndex,
-      //   draggedCardOrder,
-      //   targetCardIndex
-      // })
-
-      // this.data[this.draggedCardOrder].cards.splice(this.targetCardIndex, 1)
-      // this.data[this.draggedGroupOrder].cards.splice(this.targetGroupIndex, 0, this.draggedCard)
-
-      const isAbove = draggedOffsetTop < targetCenter
-      const { id } = this.draggedCard
+      const insertIndex = getInsertIndex(
+        draggedOffsetTop,
+        targetCenter,
+        this.draggedGroupOrder,
+        targetGroupOrder,
+        targetCardOrder
+      )
 
       this.data = [ ...this.data ]
-        .map(c => {
-          if (c.order === this.draggedOrder) {
-            return {
-              ...c,
-              cards: c.cards.filter(card => card.id !== id)
-            }
-          }
-          return c
-        })
-        .reduce((acc, group) => {
-          if (group.order === targetGroupOrder) {
-            const newGroups = {
-              ...group,
-              cards: insertCard(group.cards, isAbove ? targetCardOrder - 1 : targetCardOrder, this.draggedCard).map((coe, i) => {
-                return {
-                  ...coe,
-                  order: i + 1
-                }
-              })
-            }
-
-            acc = [ ...acc, newGroups ]
-          } else {
-            acc = [ ...acc, group ]
-          }
-
-          return acc
-        }, [])
+        .map(data => removeCard(data, this.draggedGroupOrder, this.draggedCard))
+        .reduce((acc, group) => move(acc, group, targetGroupOrder, insertIndex, this.draggedCard), [])
 
       this.isDragging = {}
       this.draggedCard = {}
