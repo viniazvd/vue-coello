@@ -49,7 +49,15 @@ function insertCards (acc, group, targetGroupOrder, insertIndex, draggedCard) {
   return acc
 }
 
-export function move (data, draggedGroupOrder, draggedCard, targetGroupOrder, draggedOffsetTop, targetCenter, targetCardOrder) {
+export function move ({
+  data,
+  targetCenter,
+  draggedOffsetTop,
+  draggedGroupOrder,
+  targetGroupOrder,
+  draggedCard,
+  targetCardOrder
+}) {
   const insertIndex = getInsertIndex(
     draggedOffsetTop,
     targetCenter,

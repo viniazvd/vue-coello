@@ -105,15 +105,15 @@ export default {
         }
       }
 
-      this.data = move(
-        this.data,
-        this.draggedGroupOrder,
-        this.draggedCard,
-        targetGroupOrder,
-        draggedOffsetTop,
+      this.data = move({
+        data: this.data,
         targetCenter,
-        targetCardOrder
-      )
+        draggedOffsetTop,
+        targetCardOrder,
+        targetGroupOrder,
+        draggedCard: this.draggedCard,
+        draggedGroupOrder: this.draggedGroupOrder
+      })
 
       this.resetDraggableData()
     },
