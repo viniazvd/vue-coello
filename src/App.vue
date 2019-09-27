@@ -1,5 +1,5 @@
 <template>
-  <div id="app" class="board">
+  <div id="app" class="board" draggable="false">
     <ul
       v-for="(groupName, groupOrder) of groups"
       :key="groupName"
@@ -15,9 +15,11 @@
           :data-card-order="card.order"
           :class="{ '--is-dragging': card.id === isDragging.id }"
           draggable="true"
-          @drop="e => onDragDrop(e, card)"
+          @dragover.prevent
+          @dragleave="onDragLeave"
+          @drop="e => onDrop(e, card)"
+          @dragenter="onDragEnter(card)"
           @dragstart="onDragStart(card, groupOrder + 1)"
-          @dragover.prevent="e => onDragOver(card)"
         >
           <main>{{ card.task }}</main>
         </li>
@@ -82,7 +84,7 @@ export default {
       this.draggedGroupOrder = draggedGroupOrder
     },
 
-    onDragDrop (e, card) {
+    onDrop (e, card) {
       const targetCardOrder = +this.getTargetOrder(e, 'li', 'cardOrder')
       const targetGroupOrder = +this.getTargetOrder(e, 'ul', 'groupOrder')
 
@@ -118,8 +120,12 @@ export default {
       this.resetDraggableData()
     },
 
-    onDragOver (card) {
+    onDragEnter (card) {
       this.isDragging = card
+    },
+
+    onDragLeave () {
+      this.resetDraggableData()
     }
   }
 }
@@ -156,15 +162,17 @@ html, body {
       border: 1px solid red;
 
       &.--is-dragging {
-        // margin-top: 100px;
-        border: 2px dashed rgba(0, 0, 0, 0.2);
-        padding-top: 31px;
         border-radius: 0;
-        background: transparent;
         box-shadow: none;
         cursor: grabbing;
+        padding-top: 31px;
+        // margin-top: 100px;
+        background: transparent;
+        border: 2px dashed rgba(0, 0, 0, 0.2);
 
-        main { opacity: 0; }
+        main {
+          opacity: 0;
+        }
       }
     }
   }
