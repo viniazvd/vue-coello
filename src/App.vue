@@ -28,12 +28,7 @@
 
 <script>
 import data from './db'
-import {
-  move,
-  removeCard,
-  getClosest,
-  getInsertIndex
-} from './services'
+import { move, getClosest } from './services'
 
 export default {
   name: 'vue-coe-dnd',
@@ -50,12 +45,6 @@ export default {
   computed: {
     groups () {
       return data.map(({ group }) => group)
-    },
-
-    draggedCardOrder () {
-      if (!this.draggedCard) return null
-
-      return this.draggedCard.order
     }
   },
 
@@ -82,6 +71,12 @@ export default {
       }
     },
 
+    resetDraggableData () {
+      this.isDragging = {}
+      this.draggedCard = {}
+      this.draggedOrder = null
+    },
+
     onDragStart (card, draggedGroupOrder) {
       this.draggedCard = card
       this.draggedGroupOrder = draggedGroupOrder
@@ -93,40 +88,32 @@ export default {
 
       const { targetCenter, draggedOffsetTop } = this.getTargetRect(e)
 
-      if (this.draggedCardOrder === targetCardOrder && this.draggedGroupOrder === targetGroupOrder) {
-        this.isDragging = {}
-        this.draggedCard = {}
-        this.draggedOrder = null
+      if (this.draggedCard.order === targetCardOrder && this.draggedGroupOrder === targetGroupOrder) {
+        this.resetDraggableData()
         return
       }
 
       if (this.draggedGroupOrder === targetGroupOrder) {
-        if (this.draggedCardOrder < targetCardOrder && draggedOffsetTop < targetCenter) {
-          this.isDragging = {}
-          this.draggedCard = {}
-          this.draggedOrder = null
+        if (this.draggedCard.order < targetCardOrder && draggedOffsetTop < targetCenter) {
+          this.resetDraggableData()
           return
         }
 
-        if (this.draggedCardOrder > targetCardOrder && draggedOffsetTop > targetCenter) {
-          this.isDragging = {}
-          this.draggedCard = {}
-          this.draggedOrder = null
+        if (this.draggedCard.order > targetCardOrder && draggedOffsetTop > targetCenter) {
+          this.resetDraggableData()
           return
         }
       }
 
-      const insertIndex = getInsertIndex(
+      this.data = move(
+        this.data,
+        this.draggedGroupOrder,
+        this.draggedCard,
+        targetGroupOrder,
         draggedOffsetTop,
         targetCenter,
-        this.draggedGroupOrder,
-        targetGroupOrder,
         targetCardOrder
       )
-
-      this.data = [ ...this.data ]
-        .map(data => removeCard(data, this.draggedGroupOrder, this.draggedCard))
-        .reduce((acc, group) => move(acc, group, targetGroupOrder, insertIndex, this.draggedCard), [])
 
       this.isDragging = {}
       this.draggedCard = {}

@@ -29,22 +29,36 @@ export function removeCard (data, draggedGroupOrder, draggedCard) {
   return data
 }
 
-export function move (acc, group, targetGroupOrder, insertIndex, draggedCard) {
-  if (group.order === targetGroupOrder) {
-    const newGroups = {
-      ...group,
-      cards: insertCard(group.cards, insertIndex, draggedCard).map((coe, i) => {
-        return {
-          ...coe,
-          order: i + 1
-        }
-      })
-    }
-
-    acc = [ ...acc, newGroups ]
-  } else {
-    acc = [ ...acc, group ]
+function getNewGroup (group, insertIndex, draggedCard) {
+  return {
+    ...group,
+    cards: insertCard(group.cards, insertIndex, draggedCard).map((card, i) => {
+      return { ...card, order: i + 1 }
+    })
   }
+}
+
+function insertCards (acc, group, targetGroupOrder, insertIndex, draggedCard) {
+  acc = [
+    ...acc,
+    group.order === targetGroupOrder
+      ? getNewGroup(group, insertIndex, draggedCard)
+      : group
+  ]
 
   return acc
+}
+
+export function move (data, draggedGroupOrder, draggedCard, targetGroupOrder, draggedOffsetTop, targetCenter, targetCardOrder) {
+  const insertIndex = getInsertIndex(
+    draggedOffsetTop,
+    targetCenter,
+    draggedGroupOrder,
+    targetGroupOrder,
+    targetCardOrder
+  )
+
+  return [ ...data ]
+    .map(data => removeCard(data, draggedGroupOrder, draggedCard))
+    .reduce((acc, group) => insertCards(acc, group, targetGroupOrder, insertIndex, draggedCard), [])
 }
