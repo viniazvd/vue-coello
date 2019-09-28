@@ -1,8 +1,8 @@
 import Vue from 'vue'
-import App from './App.vue'
+import Board from './Board.vue'
 
 Vue.config.productionTip = false
 
 new Vue({
-  render: h => h(App)
+  render: h => h(Board)
 }).$mount('#app')
