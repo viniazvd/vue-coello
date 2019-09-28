@@ -49,7 +49,7 @@ function insertCards (acc, group, targetGroupOrder, insertIndex, draggedCard) {
   return acc
 }
 
-export function move ({
+export function moveCard ({
   data,
   targetCenter,
   draggedOffsetTop,
