@@ -1,6 +1,6 @@
 export default [
   {
-    group: 'backlog',
+    name: 'backlog',
     order: 1,
     cards: [
       {
@@ -37,13 +37,13 @@ export default [
   },
 
   {
-    group: 'todo',
+    name: 'todo',
     order: 2,
     cards: []
   },
 
   {
-    group: 'doing',
+    name: 'doing',
     order: 3,
     cards: [
       {
@@ -65,7 +65,7 @@ export default [
   },
 
   {
-    group: 'done',
+    name: 'done',
     order: 4,
     cards: [
       {
