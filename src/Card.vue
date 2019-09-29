@@ -3,7 +3,6 @@
     :class="classes"
     draggable="true"
     @dragend.stop="onDragEnd"
-    @drop.stop="onDragDrop"
     @dragover.prevent="onDragOver"
     @dragstart="onDragStart"
   >
@@ -83,29 +82,10 @@ export default {
       })
     },
 
-    onDragDrop (e) {
-      if (this.isDraggingGroup) return
-
-      const data = moveCards({
-        data: this.data,
-        isAboveCenter: this.isAboveCenter,
-        draggedGroupOrder: this.draggedGroup.order,
-        draggedCard: this.draggedCard,
-        targetGroupOrder: this.draggingGroupOver.order,
-        targetCardOrder: this.draggingCardOver.order
-      })
-
-      this.reset()
-      this.$emit('card:move', data)
-    },
-
     onDragOver (e) {
       if (this.isDraggingGroup) return
 
-      this.$emit('card:dragover', {
-        card: this.card,
-        group: this.group
-      })
+      this.$emit('card:dragover', this.card)
 
       this.$nextTick(() => {
         if (this.draggedGroup.order !== this.draggingGroupOver.order) {
@@ -142,6 +122,19 @@ export default {
     },
 
     onDragEnd () {
+      if (this.isDraggingGroup) return
+
+      const data = moveCards({
+        data: this.data,
+        isAboveCenter: this.isAboveCenter,
+        draggedGroupOrder: this.draggedGroup.order,
+        draggedCard: this.draggedCard,
+        targetGroupOrder: this.draggingGroupOver.order,
+        targetCardOrder: this.draggingCardOver.order
+      })
+
+      this.reset()
+      this.$emit('card:move', data)
       this.$emit('card:reset')
     }
   }
@@ -171,12 +164,12 @@ export default {
 
   &.-is-above-center {
     margin-top: 50px;
-    transform: rotate(2deg);
+    transform: rotate(1deg);
   }
 
   &.-is-below-center {
     margin-bottom: 50px;
-    transform: rotate(-2deg);
+    transform: rotate(-1deg);
   }
 }
 </style>
