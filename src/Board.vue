@@ -24,7 +24,7 @@
       @card:dragstart="onCardDragStart"
       @card:move="value => data = value"
       @card:reset="resetDraggableCard"
-      @card:dragover="onCardDragOver"
+      @card:dragover="card => draggingCardOver = card"
     >
     </group>
   </main>
@@ -86,11 +86,6 @@ export default {
 
       this.draggedCard = card
       this.draggedGroup = group
-    },
-
-    onCardDragOver ({ card, group }) {
-      this.draggingCardOver = card
-      this.draggingGroupOver = group
     }
   }
 }
