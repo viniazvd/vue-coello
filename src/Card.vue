@@ -52,8 +52,6 @@ export default {
     },
 
     onDragStart () {
-      console.log('card:start')
-
       this.$emit('card:dragstart', {
         card: this.card,
         group: this.group
@@ -62,7 +60,6 @@ export default {
 
     onDragDrop (e) {
       if (this.isDraggingGroup) return
-      console.log('card:drop')
 
       const { targetCenterHorizontal, draggedOffsetTop } = this.getTargetRect(e)
 
@@ -98,7 +95,6 @@ export default {
 
     onDragOver () {
       if (this.isDraggingGroup) return
-      console.log('card:over')
 
       this.$emit('card:dragover', {
         card: this.card,
@@ -107,8 +103,6 @@ export default {
     },
 
     onDragEnd () {
-      console.log('card:end')
-
       this.$emit('card:reset')
     }
   }
