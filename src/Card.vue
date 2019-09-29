@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import { moveCard, getClosest } from './services'
+import { moveCards } from './services/card'
 
 export default {
   name: 'card',
@@ -40,11 +40,10 @@ export default {
 
   methods: {
     getTargetRect (e) {
-      const card = getClosest(e, 'li')
       const {
         top: targetCardTop,
         bottom: targetCardBottom
-      } = card.getBoundingClientRect()
+      } = this.$el.getBoundingClientRect()
 
       return {
         draggedOffsetTop: Math.ceil(e.clientY - targetCardTop),
@@ -83,7 +82,7 @@ export default {
         }
       }
 
-      const data = moveCard({
+      const data = moveCards({
         data: this.data,
         targetCenterHorizontal,
         draggedOffsetTop,
