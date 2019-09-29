@@ -47,8 +47,8 @@ export default {
       } = card.getBoundingClientRect()
 
       return {
-        targetCenter: Math.ceil((targetCardBottom - targetCardTop) / 2),
-        draggedOffsetTop: Math.ceil(e.clientY - targetCardTop)
+        draggedOffsetTop: Math.ceil(e.clientY - targetCardTop),
+        targetCenterHorizontal: Math.ceil((targetCardBottom - targetCardTop) / 2)
       }
     },
 
@@ -65,9 +65,9 @@ export default {
       if (this.isDraggingGroup) return
       console.log('card:drop')
 
-      const { targetCenter, draggedOffsetTop } = this.getTargetRect(e)
+      const { targetCenterHorizontal, draggedOffsetTop } = this.getTargetRect(e)
 
-      const isAboveCenter = draggedOffsetTop < targetCenter
+      const isAboveCenter = draggedOffsetTop < targetCenterHorizontal
 
       if (this.draggedGroup.order === this.draggingGroupOver.order) {
         if (this.draggedCard.order === this.draggingCardOver.order) {
@@ -85,7 +85,7 @@ export default {
 
       const data = moveCard({
         data: this.data,
-        targetCenter,
+        targetCenterHorizontal,
         draggedOffsetTop,
         draggedGroupOrder: this.draggedGroup.order,
         draggedCard: this.draggedCard,
