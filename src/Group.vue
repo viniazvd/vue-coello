@@ -2,7 +2,7 @@
   <section
     :class="[ 'group',
       {
-        '-is-dragging-group': !isDraggingGroup && group.order === draggingGroupOver.order
+        '-is-dragging-group': !isDraggingCard && group.order === draggingGroupOver.order
       }
     ]"
   >
@@ -23,7 +23,6 @@
         :data="data"
         :card="card"
         :group="group"
-        :is-dragging-group="isDraggingGroup"
         :dragging-card-over="draggingCardOver"
         :dragging-group-over="draggingGroupOver"
         v-bind="$attrs"
@@ -55,7 +54,6 @@ export default {
       required: true
     },
     isDraggingCard: Boolean,
-    isDraggingGroup: Boolean,
     draggingCardOver: Object,
     draggingGroupOver: Object
   },
