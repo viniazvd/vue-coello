@@ -97,7 +97,11 @@ export default {
 </script>
 
 <style lang="scss">
-* { box-sizing: border-box; }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
 html, body {
   margin: 0;
@@ -108,7 +112,12 @@ html, body {
 
 .board {
   display: flex;
-  padding: 30px 0;
+  padding: 30px;
   height: 100%;
+
+  color: #333;
+  background: #ecf1f8;
+  font: 14px, sans-serif;
+  -webkit-font-smoothing: antialiased !important;
 }
 </style>

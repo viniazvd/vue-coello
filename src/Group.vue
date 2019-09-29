@@ -1,19 +1,19 @@
 <template>
   <section
+    draggable="true"
     :class="[ 'group',
       {
         '-is-dragging-group': !isDraggingCard && group.order === draggingGroupOver.order
       }
     ]"
+    @drop="onDragDrop"
+    @dragend="onDragEnd"
+    @dragstart="onDragStart"
+    @dragover.prevent="onDragOver"
   >
-    <header
-      draggable="true"
-      @drop="onDragDrop"
-      @dragend="onDragEnd"
-      @dragstart="onDragStart"
-      @dragover.prevent="onDragOver"
-    >
-      {{ group.name }}
+    <header>
+      <span class="group-name">{{ group.name }}</span>
+      <button class="actions">...</button>
     </header>
 
     <ul>
@@ -80,10 +80,14 @@ export default {
     },
 
     onDragStart () {
+      if (this.isDraggingCard) return
+
       this.$emit('group:dragstart', this.group)
     },
 
     onDragDrop (e) {
+      if (this.isDraggingCard) return
+
       const { targetCenterVertical, draggedOffsetLeft } = this.getTargetRect(e)
       const isLeftCenter = draggedOffsetLeft < targetCenterVertical
 
@@ -111,10 +115,14 @@ export default {
     },
 
     onDragOver () {
+      if (this.isDraggingCard) return
+
       this.$emit('group:dragover', this.group)
     },
 
     onDragEnd () {
+      if (this.isDraggingCard) return
+
       this.$emit('group:reset')
     }
   }
@@ -129,28 +137,44 @@ export default {
 
   width: 100%;
 
+  & + .group {
+    margin-left: 30px;
+    // border-left: 1px solid rgba(0, 0, 0, 0.05);
+  }
+
   &.-is-dragging-group {
     opacity: 0.5;
     box-shadow: none;
     cursor: grabbing;
     background: transparent;
     border: 2px dashed rgba(0, 0, 0, 0.2);
+    transform: rotate(10deg);
   }
 
   & > header {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
 
     width: 100%;
     cursor: grab;
     padding: 10px 0;
+
+    & > .group-name { color: red; }
+    & > .actions {
+      width: 20px;
+      height: 20px;
+
+      border: 0;
+      border-radius: 50%;
+
+      opacity: 0.7;
+      background-color: black;
+    }
   }
 
   & > ul {
     flex: 1;
-    margin: 0;
     width: 100%;
-    padding: 0 15px;
     list-style-type: none;
   }
 }

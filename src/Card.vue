@@ -1,10 +1,6 @@
 <template>
   <li
-    :class="[ 'card',
-      {
-        '-is-dragging-card': card.id === draggingCardOver.id
-      }
-    ]"
+    :class="classes"
     draggable="true"
     @dragend.stop="onDragEnd"
     @drop.stop="onDragDrop"
@@ -38,6 +34,28 @@ export default {
     draggingGroupOver: Object
   },
 
+  data () {
+    return {
+      isValidTarget: false,
+      isAboveCenter: false
+    }
+  },
+
+  computed: {
+    classes () {
+      const isDraggingCard = this.card.id === this.draggingCardOver.id
+
+      return [ 'card',
+        {
+          '-is-dragging-card': isDraggingCard,
+          '-is-above-center': isDraggingCard && this.isAboveCenter,
+          '-is-below-center': isDraggingCard && !this.isAboveCenter,
+          '-is-valid-target': isDraggingCard && this.isValidTarget
+        }
+      ]
+    }
+  },
+
   methods: {
     getTargetRect (e) {
       const {
@@ -51,7 +69,14 @@ export default {
       }
     },
 
-    onDragStart () {
+    reset () {
+      this.isValidTarget = false
+      this.isAboveCenter = false
+
+      this.$emit('card:reset')
+    },
+
+    onDragStart (e) {
       this.$emit('card:dragstart', {
         card: this.card,
         group: this.group
@@ -61,44 +86,58 @@ export default {
     onDragDrop (e) {
       if (this.isDraggingGroup) return
 
-      const { targetCenterHorizontal, draggedOffsetTop } = this.getTargetRect(e)
-
-      const isAboveCenter = draggedOffsetTop < targetCenterHorizontal
-
-      if (this.draggedGroup.order === this.draggingGroupOver.order) {
-        if (this.draggedCard.order === this.draggingCardOver.order) {
-          return this.$emit('card:reset')
-        }
-
-        if ((this.draggedCard.order - this.draggingCardOver.order === -1) && isAboveCenter) {
-          return this.$emit('card:reset')
-        }
-
-        if ((this.draggedCard.order - this.draggingCardOver.order === 1) && !isAboveCenter) {
-          return this.$emit('card:reset')
-        }
-      }
-
       const data = moveCards({
         data: this.data,
-        targetCenterHorizontal,
-        draggedOffsetTop,
+        isAboveCenter: this.isAboveCenter,
         draggedGroupOrder: this.draggedGroup.order,
         draggedCard: this.draggedCard,
         targetGroupOrder: this.draggingGroupOver.order,
         targetCardOrder: this.draggingCardOver.order
       })
 
-      this.$emit('card:reset')
+      this.reset()
       this.$emit('card:move', data)
     },
 
-    onDragOver () {
+    onDragOver (e) {
       if (this.isDraggingGroup) return
 
       this.$emit('card:dragover', {
         card: this.card,
         group: this.group
+      })
+
+      this.$nextTick(() => {
+        if (this.draggedGroup.order !== this.draggingGroupOver.order) {
+          this.isValidTarget = true
+          return
+        }
+
+        if (!this.draggingGroupOver.order) {
+          this.isValidTarget = false
+          return
+        }
+
+        const { targetCenterHorizontal, draggedOffsetTop } = this.getTargetRect(e)
+
+        this.isAboveCenter = draggedOffsetTop < targetCenterHorizontal
+
+        if (this.draggedCard.order === this.draggingCardOver.order) {
+          this.isValidTarget = false
+          return
+        }
+
+        if ((this.draggedCard.order - this.draggingCardOver.order === -1) && this.isAboveCenter) {
+          this.isValidTarget = false
+          return
+        }
+
+        if ((this.draggedCard.order - this.draggingCardOver.order === 1) && !this.isAboveCenter) {
+          this.isValidTarget = false
+          return
+        }
+
+        this.isValidTarget = true
       })
     },
 
@@ -111,17 +150,33 @@ export default {
 
 <style lang="scss">
 .card {
-  padding: 30px;
-  margin-top: 20px;
-  border: 1px solid red;
+  padding: 15px;
+  margin-bottom: 10px;
+
+  background: #FFF;
+  border-radius: 5px;
+
+  box-shadow: 0 1px 4px 0 rgba(192, 208, 230, 0.8);
 
   &.-is-dragging-card {
-    // opacity: 0;
+    opacity: 0.5;
     box-shadow: none;
     cursor: grabbing;
-    padding-top: 31px;
-    background: transparent;
+    transform: scale(-0.5);
+    background: rgba(0, 0, 0, 0.2);
     border: 2px dashed rgba(0, 0, 0, 0.2);
+  }
+
+  &.-is-valid-target { background: green; }
+
+  &.-is-above-center {
+    margin-top: 50px;
+    transform: rotate(2deg);
+  }
+
+  &.-is-below-center {
+    margin-bottom: 50px;
+    transform: rotate(-2deg);
   }
 }
 </style>
