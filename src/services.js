@@ -1,7 +1,3 @@
-export function getClosest (e, el) {
-  return e.target.closest(el)
-}
-
 function getInsertIndex (draggedOffsetTop, targetCenterHorizontal, draggedGroupOrder, targetGroupOrder, targetCardOrder) {
   const isAbove = draggedOffsetTop < targetCenterHorizontal
   const isSameGroup = draggedGroupOrder === targetGroupOrder
@@ -11,7 +7,7 @@ function getInsertIndex (draggedOffsetTop, targetCenterHorizontal, draggedGroupO
   return isAbove ? targetCardOrder - 1 : targetCardOrder
 }
 
-function insertCard (data, index, card) {
+export function insertCard (data, index, card) {
   return [
     ...data.slice(0, index), // before index
     card,                    // inserted card
