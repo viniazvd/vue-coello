@@ -1,11 +1,7 @@
 <template>
   <section
     draggable="true"
-    :class="[ 'group',
-      {
-        '-is-dragging-group': !isDraggingCard && group.order === draggingGroupOver.order
-      }
-    ]"
+    :class="classes"
     @drop="onDragDrop"
     @dragend="onDragEnd"
     @dragstart="onDragStart"
@@ -62,6 +58,19 @@ export default {
     draggingGroupOver: Object
   },
 
+  computed: {
+    classes () {
+      const isGroupOver = this.group.order === this.draggingGroupOver.order
+
+      return [ 'group',
+        {
+          '-is-group-over': isGroupOver,
+          '-is-dragging-group': !this.isDraggingCard && isGroupOver
+        }
+      ]
+    }
+  },
+
   methods: {
     getCards (groupName) {
       return this.data.find(({ name }) => name === groupName).cards
@@ -115,8 +124,6 @@ export default {
     },
 
     onDragOver () {
-      if (this.isDraggingCard) return
-
       this.$emit('group:dragover', this.group)
     },
 
@@ -136,10 +143,15 @@ export default {
   flex-direction: column;
 
   width: 100%;
+  border-radius: 5px;
 
   & + .group {
     margin-left: 30px;
     // border-left: 1px solid rgba(0, 0, 0, 0.05);
+  }
+
+  &.-is-group-over {
+    background-color: rgba(0, 0, 0, 0.1);
   }
 
   &.-is-dragging-group {
@@ -147,8 +159,9 @@ export default {
     box-shadow: none;
     cursor: grabbing;
     background: transparent;
+    transform: rotate(2deg);
+    background-color: rgba(0, 0, 0, 0.1);
     border: 2px dashed rgba(0, 0, 0, 0.2);
-    transform: rotate(10deg);
   }
 
   & > header {
