@@ -13,4 +13,5 @@ export function moveGroups ({ data, isLeftCenter, draggedGroup, draggingGroupOve
   const index = getInsertIndex(isLeftCenter, isLeftToRight, draggingGroupOver.order)
 
   return reposition(filtered, index, draggedGroup)
+    .map((group, i) => ({ ...group, order: i + 1 }))
 }
