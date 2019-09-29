@@ -23,6 +23,7 @@
         :data="data"
         :card="card"
         :group="group"
+        :dragged-group="draggedGroup"
         :dragging-card-over="draggingCardOver"
         :dragging-group-over="draggingGroupOver"
         v-bind="$attrs"
@@ -35,6 +36,8 @@
 </template>
 
 <script>
+import { moveGroups } from './services/group'
+
 export default {
   name: 'group',
 
@@ -54,6 +57,7 @@ export default {
       required: true
     },
     isDraggingCard: Boolean,
+    draggedGroup: Object,
     draggingCardOver: Object,
     draggingGroupOver: Object
   },
@@ -63,22 +67,54 @@ export default {
       return this.data.find(({ name }) => name === groupName).cards
     },
 
+    getTargetRect (e) {
+      const {
+        left: targetGroupLeft,
+        right: targetGroupRight
+      } = this.$el.getBoundingClientRect()
+
+      return {
+        draggedOffsetLeft: Math.ceil(e.clientX - targetGroupLeft),
+        targetCenterVertical: Math.ceil((targetGroupRight - targetGroupLeft) / 2)
+      }
+    },
+
     onDragStart () {
-      console.log('group:start')
       this.$emit('group:dragstart', this.group)
     },
 
     onDragDrop (e) {
-      console.log('group:drop')
+      const { targetCenterVertical, draggedOffsetLeft } = this.getTargetRect(e)
+      const isLeftCenter = draggedOffsetLeft < targetCenterVertical
+
+      if (this.draggedGroup.order === this.draggingGroupOver.order) {
+        return this.$emit('group:reset')
+      }
+
+      if ((this.draggedGroup.order - this.draggingGroupOver.order === -1) && isLeftCenter) {
+        return this.$emit('group:reset')
+      }
+
+      if ((this.draggedGroup.order - this.draggingGroupOver.order === 1) && !isLeftCenter) {
+        return this.$emit('group:reset')
+      }
+
+      const data = moveGroups({
+        data: [...this.data],
+        isLeftCenter,
+        draggedGroup: this.draggedGroup,
+        draggingGroupOver: this.draggingGroupOver
+      })
+
+      this.$emit('group:reset')
+      this.$emit('group:move', data)
     },
 
     onDragOver () {
-      console.log('group:over')
       this.$emit('group:dragover', this.group)
     },
 
     onDragEnd () {
-      console.log('group:end')
       this.$emit('group:reset')
     }
   }
@@ -94,7 +130,7 @@ export default {
   width: 100%;
 
   &.-is-dragging-group {
-    opacity: 0.6;
+    opacity: 0.5;
     box-shadow: none;
     cursor: grabbing;
     background: transparent;
