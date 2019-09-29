@@ -1,12 +1,11 @@
 import { reposition } from './'
 
-function getInsertIndex (draggedOffsetTop, targetCenterHorizontal, draggedGroupOrder, targetGroupOrder, targetCardOrder) {
-  const isAbove = draggedOffsetTop < targetCenterHorizontal
+function getInsertIndex (isAboveCenter, draggedGroupOrder, targetGroupOrder, targetCardOrder) {
   const isSameGroup = draggedGroupOrder === targetGroupOrder
 
   if (isSameGroup) return targetCardOrder - 1
 
-  return isAbove ? targetCardOrder - 1 : targetCardOrder
+  return isAboveCenter ? targetCardOrder - 1 : targetCardOrder
 }
 
 function removeCard (data, draggedGroupOrder, draggedCard) {
@@ -41,16 +40,14 @@ function insertCards (acc, group, targetGroupOrder, insertIndex, draggedCard) {
 
 export function moveCards ({
   data,
-  targetCenterHorizontal,
-  draggedOffsetTop,
+  isAboveCenter,
   draggedGroupOrder,
   targetGroupOrder,
   draggedCard,
   targetCardOrder
 }) {
   const insertIndex = getInsertIndex(
-    draggedOffsetTop,
-    targetCenterHorizontal,
+    isAboveCenter,
     draggedGroupOrder,
     targetGroupOrder,
     targetCardOrder
