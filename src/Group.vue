@@ -143,6 +143,7 @@ export default {
   flex-direction: column;
 
   width: 100%;
+  padding: 10px;
   border-radius: 5px;
 
   & + .group {
