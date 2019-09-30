@@ -1,4 +1,4 @@
-import { reposition } from './'
+import { sort, reposition } from './'
 
 function getInsertIndex (isLeftCenter, isLeftToRight, order) {
   if (!isLeftCenter && !isLeftToRight) return order
@@ -12,6 +12,7 @@ export function moveGroups ({ data, isLeftCenter, draggedGroup, draggingGroupOve
   const filtered = data.filter(group => group.order !== draggedGroup.order)
   const index = getInsertIndex(isLeftCenter, isLeftToRight, draggingGroupOver.order)
 
-  return reposition(filtered, index, draggedGroup)
-    .map((group, i) => ({ ...group, order: i + 1 }))
+  const λ = reposition(filtered, index, draggedGroup)
+
+  return sort(λ)
 }
