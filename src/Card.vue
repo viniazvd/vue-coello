@@ -30,10 +30,16 @@ export default {
     isValidTarget: Boolean,
     isAboveCenter: Boolean,
 
+    isDraggingSameCard: Boolean,
+    isDraggingSameGroup: Boolean,
+
+    isTopToBottom: Boolean,
+    isBottomToTop: Boolean,
+
     isDraggingGroup: Boolean,
 
-    draggedGroup: Object,
     draggedCard: Object,
+    draggedGroup: Object,
 
     draggingCardOver: Object,
     draggingGroupOver: Object
@@ -45,10 +51,10 @@ export default {
 
       return [ 'card',
         {
-          '-is-dragging-card': isDraggingCard,
-          '-is-above-center': isDraggingCard && this.isAboveCenter,
-          '-is-below-center': isDraggingCard && !this.isAboveCenter,
-          '-is-valid-target': isDraggingCard && this.isValidTarget
+          '-is-dragging-card': isDraggingCard && !this.isDraggingGroup,
+          '-is-above-center': isDraggingCard && this.isAboveCenter && !this.isDraggingGroup,
+          '-is-below-center': isDraggingCard && !this.isAboveCenter && !this.isDraggingGroup,
+          '-is-valid-target': isDraggingCard && this.isValidTarget && !this.isDraggingGroup
         }
       ]
     }
@@ -71,10 +77,6 @@ export default {
       this.$emit('set:valid-target', status)
     },
 
-    reset () {
-      this.$emit('card:reset')
-    },
-
     onDragStart (e) {
       this.$emit('card:dragstart', {
         card: this.card,
@@ -91,43 +93,19 @@ export default {
 
       this.$nextTick(() => {
         if (this.isDraggingGroup || !this.draggingGroupOver.order) {
-          // console.log('1 FALSE')
-          this.setValidTarget(false)
-          return
+          return this.setValidTarget(false)
         }
+        if (this.isDraggingSameCard) return this.setValidTarget(false)
+        if (!this.isDraggingSameGroup) return this.setValidTarget(true)
+        if (this.isTopToBottom && this.isAboveCenter) return this.setValidTarget(false)
+        if (this.isBottomToTop && !this.isAboveCenter) return this.setValidTarget(false)
 
-        if (this.draggedGroup.order !== this.draggingGroupOver.order) {
-          // console.log('2 OKKKK')
-          this.setValidTarget(true)
-          return
-        }
-
-        if (this.draggedCard.order === this.draggingCardOver.order) {
-          // console.log('3 FALSE')
-          this.setValidTarget(false)
-          return
-        }
-
-        if ((this.draggedCard.order - this.draggingCardOver.order === -1) && this.isAboveCenter) {
-          // console.log('4 FALSE')
-          this.setValidTarget(false)
-          return
-        }
-
-        if ((this.draggedCard.order - this.draggingCardOver.order === 1) && !this.isAboveCenter) {
-          // console.log('5 FALSE')
-          this.setValidTarget(false)
-          return
-        }
-
-        this.setValidTarget(true)
-        // console.log('6 OKKK')
+        return this.setValidTarget(true)
       })
     },
 
     onDragEnd () {
-      if (this.isDraggingGroup) return this.reset()
-      console.log('end', this.isAboveCenter)
+      if (this.isDraggingGroup) return this.$emit('card:reset')
 
       const data = moveCards({
         data: this.data,
@@ -138,7 +116,7 @@ export default {
         targetCardOrder: this.draggingCardOver.order
       })
 
-      this.reset()
+      this.$emit('card:reset')
       this.$emit('card:move', data)
     }
   }
@@ -156,7 +134,7 @@ export default {
   box-shadow: 0 1px 4px 0 rgba(192, 208, 230, 0.8);
 
   &.-is-dragging-card {
-    opacity: 1;
+    opacity: 0.6;
     box-shadow: none;
     cursor: grabbing;
     background: rgba(0, 0, 0, 0.2);
