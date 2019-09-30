@@ -7,6 +7,9 @@
       :data="data"
       :group="group"
 
+      :is-valid-target="isValidTarget"
+      :is-above-center="isAboveCenter"
+
       :is-dragging-card="isDraggingCard"
       :is-dragging-group="isDraggingGroup"
 
@@ -15,6 +18,9 @@
 
       :dragging-group-over="draggingGroupOver"
       :dragging-card-over="draggingCardOver"
+
+      @set:valid-target="status => isValidTarget = status"
+      @set:is-above-center="status => isAboveCenter = status"
 
       @group:dragstart="onGroupDragStart"
       @group:move="value => data = value"
@@ -44,6 +50,9 @@ export default {
     return {
       data: data,
 
+      isValidTarget: false,
+      isAboveCenter: false,
+
       isDraggingCard: false,
       isDraggingGroup: false,
 
@@ -69,6 +78,9 @@ export default {
 
     resetDraggableCard () {
       this.isDraggingCard = false
+
+      this.isValidTarget = false
+      this.isAboveCenter = false
 
       this.draggedCard = {}
       this.draggingCardOver = {}

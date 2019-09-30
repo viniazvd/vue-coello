@@ -2,8 +2,8 @@
   <li
     :class="classes"
     draggable="true"
-    @dragend.stop="onDragEnd"
-    @dragover.prevent="onDragOver"
+    @dragend="onDragEnd"
+    @dragover="onDragOver"
     @dragstart="onDragStart"
   >
     {{ card.task }}
@@ -26,18 +26,17 @@ export default {
       required: true
     },
     group: Object,
+
+    isValidTarget: Boolean,
+    isAboveCenter: Boolean,
+
     isDraggingGroup: Boolean,
+
     draggedGroup: Object,
     draggedCard: Object,
+
     draggingCardOver: Object,
     draggingGroupOver: Object
-  },
-
-  data () {
-    return {
-      isValidTarget: false,
-      isAboveCenter: false
-    }
   },
 
   computed: {
@@ -68,10 +67,11 @@ export default {
       }
     },
 
-    reset () {
-      this.isValidTarget = false
-      this.isAboveCenter = false
+    setValidTarget (status) {
+      this.$emit('set:valid-target', status)
+    },
 
+    reset () {
       this.$emit('card:reset')
     },
 
@@ -83,46 +83,51 @@ export default {
     },
 
     onDragOver (e) {
-      if (this.isDraggingGroup) return
-
       this.$emit('card:dragover', this.card)
 
+      const { targetCenterHorizontal, draggedOffsetTop } = this.getTargetRect(e)
+      const isAboveCenter = draggedOffsetTop < targetCenterHorizontal
+      this.$emit('set:is-above-center', isAboveCenter)
+
       this.$nextTick(() => {
+        if (this.isDraggingGroup || !this.draggingGroupOver.order) {
+          // console.log('1 FALSE')
+          this.setValidTarget(false)
+          return
+        }
+
         if (this.draggedGroup.order !== this.draggingGroupOver.order) {
-          this.isValidTarget = true
+          // console.log('2 OKKKK')
+          this.setValidTarget(true)
           return
         }
-
-        if (!this.draggingGroupOver.order) {
-          this.isValidTarget = false
-          return
-        }
-
-        const { targetCenterHorizontal, draggedOffsetTop } = this.getTargetRect(e)
-
-        this.isAboveCenter = draggedOffsetTop < targetCenterHorizontal
 
         if (this.draggedCard.order === this.draggingCardOver.order) {
-          this.isValidTarget = false
+          // console.log('3 FALSE')
+          this.setValidTarget(false)
           return
         }
 
         if ((this.draggedCard.order - this.draggingCardOver.order === -1) && this.isAboveCenter) {
-          this.isValidTarget = false
+          // console.log('4 FALSE')
+          this.setValidTarget(false)
           return
         }
 
         if ((this.draggedCard.order - this.draggingCardOver.order === 1) && !this.isAboveCenter) {
-          this.isValidTarget = false
+          // console.log('5 FALSE')
+          this.setValidTarget(false)
           return
         }
 
-        this.isValidTarget = true
+        this.setValidTarget(true)
+        // console.log('6 OKKK')
       })
     },
 
     onDragEnd () {
-      if (this.isDraggingGroup) return
+      if (this.isDraggingGroup) return this.reset()
+      console.log('end', this.isAboveCenter)
 
       const data = moveCards({
         data: this.data,
@@ -135,7 +140,6 @@ export default {
 
       this.reset()
       this.$emit('card:move', data)
-      this.$emit('card:reset')
     }
   }
 }
@@ -144,7 +148,7 @@ export default {
 <style lang="scss">
 .card {
   padding: 15px;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 
   background: #FFF;
   border-radius: 5px;
@@ -152,24 +156,20 @@ export default {
   box-shadow: 0 1px 4px 0 rgba(192, 208, 230, 0.8);
 
   &.-is-dragging-card {
-    opacity: 0.5;
+    opacity: 1;
     box-shadow: none;
     cursor: grabbing;
-    transform: scale(-0.5);
     background: rgba(0, 0, 0, 0.2);
-    border: 2px dashed rgba(0, 0, 0, 0.2);
   }
 
   &.-is-valid-target { background: green; }
 
   &.-is-above-center {
-    margin-top: 50px;
-    transform: rotate(1deg);
+    transform: translateY(10px);
   }
 
   &.-is-below-center {
-    margin-bottom: 50px;
-    transform: rotate(-1deg);
+    transform: translateY(-10px);
   }
 }
 </style>
