@@ -52,8 +52,17 @@ export default {
       type: Object,
       required: true
     },
+
     isDraggingCard: Boolean,
+
+    isDraggingSameCard: Boolean,
+    isDraggingSameGroup: Boolean,
+
+    isTopToBottom: Boolean,
+    isBottomToTop: Boolean,
+
     draggedGroup: Object,
+
     draggingCardOver: Object,
     draggingGroupOver: Object
   },
@@ -100,17 +109,9 @@ export default {
       const { targetCenterVertical, draggedOffsetLeft } = this.getTargetRect(e)
       const isLeftCenter = draggedOffsetLeft < targetCenterVertical
 
-      if (this.draggedGroup.order === this.draggingGroupOver.order) {
-        return this.$emit('group:reset')
-      }
-
-      if ((this.draggedGroup.order - this.draggingGroupOver.order === -1) && isLeftCenter) {
-        return this.$emit('group:reset')
-      }
-
-      if ((this.draggedGroup.order - this.draggingGroupOver.order === 1) && !isLeftCenter) {
-        return this.$emit('group:reset')
-      }
+      if (this.isDraggingSameGroup) return this.$emit('group:reset')
+      if (this.isTopToBottom && isLeftCenter) return this.$emit('group:reset')
+      if (this.isBottomToTop && !isLeftCenter) return this.$emit('group:reset')
 
       const data = moveGroups({
         data: [...this.data],
