@@ -5,3 +5,7 @@ export function reposition (data, index, card) {
     ...data.slice(index)     // after index
   ]
 }
+
+export function sort (data) {
+  return data.map((card, i) => ({ ...card, order: i + 1 }))
+}
