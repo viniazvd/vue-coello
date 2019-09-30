@@ -19,6 +19,11 @@
       :dragging-group-over="draggingGroupOver"
       :dragging-card-over="draggingCardOver"
 
+      :is-top-to-bottom="isTopToBottom"
+      :is-bottom-to-top="isBottomToTop"
+      :is-dragging-same-card="isDraggingSameCard"
+      :is-dragging-same-group="isDraggingSameGroup"
+
       @set:valid-target="status => isValidTarget = status"
       @set:is-above-center="status => isAboveCenter = status"
 
@@ -61,6 +66,24 @@ export default {
 
       draggingCardOver: {},
       draggingGroupOver: {}
+    }
+  },
+
+  computed: {
+    isTopToBottom () {
+      return this.draggedCard.order - this.draggingCardOver.order === -1
+    },
+
+    isBottomToTop () {
+      return this.draggedCard.order - this.draggingCardOver.order === 1
+    },
+
+    isDraggingSameGroup () {
+      return this.draggedGroup.order === this.draggingGroupOver.order
+    },
+
+    isDraggingSameCard () {
+      return this.draggedCard.order === this.draggingCardOver.order
     }
   },
 
