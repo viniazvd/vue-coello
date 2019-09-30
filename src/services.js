@@ -1,3 +1,5 @@
+import { sort } from './'
+
 function getInsertIndex (draggedOffsetTop, targetCenterHorizontal, draggedGroupOrder, targetGroupOrder, targetCardOrder) {
   const isAbove = draggedOffsetTop < targetCenterHorizontal
   const isSameGroup = draggedGroupOrder === targetGroupOrder
@@ -26,12 +28,9 @@ function removeCard (data, draggedGroupOrder, draggedCard) {
 }
 
 function getNewGroup (group, insertIndex, draggedCard) {
-  return {
-    ...group,
-    cards: insertCard(group.cards, insertIndex, draggedCard).map((card, i) => {
-      return { ...card, order: i + 1 }
-    })
-  }
+  const λ = insertCard(group.cards, insertIndex, draggedCard)
+
+  return { ...group, cards: sort(λ) }
 }
 
 function insertCards (acc, group, targetGroupOrder, insertIndex, draggedCard) {
