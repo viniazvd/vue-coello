@@ -6,32 +6,67 @@ export default [
       {
         id: 1,
         order: 1,
-        task: 'task 11'
+        labels: [
+          { type: 'blocked', color: 'blue' },
+          { type: 'backend', color: 'red' },
+          { type: 'frontend', color: 'green' }
+        ],
+        members: [
+          {
+            id: 1,
+            name: 'guilherme lico',
+            username: 'guibarsevitis',
+            photo: 'https://picsum.photos/30'
+          },
+          {
+            id: 2,
+            name: 'gisildus oliveiras',
+            username: 'gigi',
+            photo: 'https://picsum.photos/30'
+          }
+        ],
+        title: 'tituluzin',
+        description: 'task 11'
       },
       {
         id: 2,
         order: 2,
-        task: 'task 12'
+        labels: [],
+        members: [],
+        title: 'tituluzin',
+        description: 'task 12'
       },
       {
         id: 3,
         order: 3,
-        task: 'task 13'
+        labels: [],
+        members: [],
+        title: 'tituluzin',
+        description: 'task 13'
       },
       {
         id: 4,
         order: 4,
-        task: 'task 14'
+        labels: [],
+        members: [],
+        title: 'tituluzin',
+        description: 'task 14'
       },
       {
         id: 5,
         order: 5,
-        task: 'task 15'
+        labels: [],
+        members: [],
+        title: 'tituluzin',
+        description: 'task 15'
       },
       {
         id: 6,
         order: 6,
-        task: 'task 16'
+        labels: [],
+        members: [],
+        title: 'tituluzin',
+        description: 'task 16'
       }
     ]
   },
@@ -49,17 +84,26 @@ export default [
       {
         id: 7,
         order: 1,
-        task: 'task 31'
+        labels: [],
+        members: [],
+        title: 'tituluzin',
+        description: 'task 31'
       },
       {
         id: 8,
         order: 2,
-        task: 'task 32'
+        labels: [],
+        members: [],
+        title: 'tituluzin',
+        description: 'task 32'
       },
       {
         id: 9,
         order: 3,
-        task: 'task 33'
+        labels: [],
+        members: [],
+        title: 'tituluzin',
+        description: 'task 33'
       }
     ]
   },
@@ -71,17 +115,26 @@ export default [
       {
         id: 10,
         order: 1,
-        task: 'task 41'
+        labels: [],
+        members: [],
+        title: 'tituluzin',
+        description: 'task 41'
       },
       {
         id: 11,
         order: 2,
-        task: 'task 42'
+        labels: [],
+        members: [],
+        title: 'tituluzin',
+        description: 'task 42'
       },
       {
         id: 12,
         order: 3,
-        task: 'task 43'
+        labels: [],
+        members: [],
+        title: 'tituluzin',
+        description: 'task 43'
       }
     ]
   }
