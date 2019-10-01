@@ -140,6 +140,8 @@ html, body {
   height: 100%;
 }
 
+ul { list-style-type: none; }
+
 .board {
   display: flex;
   padding: 30px;
@@ -147,7 +149,8 @@ html, body {
 
   color: #333;
   background: #ecf1f8;
-  font: 14px, sans-serif;
+  font-size: 14px;
+  font-family: 'Ubuntu', sans-serif;
   -webkit-font-smoothing: antialiased !important;
 }
 </style>
