@@ -10,7 +10,8 @@
   },
   "dependencies": {
     "core-js": "^2.6.5",
-    "vue": "^2.6.10"
+    "vue": "^2.6.10",
+    "vue-coe-image": "^0.1.7"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.0.5",
