@@ -33,7 +33,17 @@
 
       <p>{{ card.title }}</p>
 
-      <footer>paradinhas do footer...</footer>
+      <footer>
+        <div v-if="false">watch</div>
+
+        <div v-if="card.comments.length">
+          <span>{{ getComments(card) }}</span>
+        </div>
+
+        <div v-if="card.attachments.length">
+          <span>{{ getAttachments(card) }}</span>
+        </div>
+      </footer>
     </div>
   </li>
 </template>
@@ -99,6 +109,18 @@ export default {
   },
 
   methods: {
+    getComments ({ comments }) {
+      const num = comments.length
+
+      return `${num} ${num === 1 ? 'comment' : 'comments'}`
+    },
+
+    getAttachments ({ attachments }) {
+      const num = attachments.length
+
+      return `${num} ${num === 1 ? 'attachment' : 'attachments'}`
+    },
+
     getTargetRect (e) {
       const {
         top: targetCardTop,
@@ -231,7 +253,15 @@ export default {
     & > p {
       font-size: 16px;
       font-weight: bold;
-      margin-bottom: 5px;
+      margin-bottom: 10px;
+    }
+
+    & > footer {
+      display: flex;
+
+      & > div {
+        margin-right: 5px;
+      }
     }
   }
 
@@ -243,7 +273,7 @@ export default {
   }
 
   &.-is-valid-target { background: green; }
-  &.-is-above-center { transform: translateY(10px); }
-  &.-is-below-center { transform: translateY(-10px); }
+  &.-is-above-center { transform: translateY(15px); }
+  &.-is-below-center { transform: translateY(-15px); }
 }
 </style>
