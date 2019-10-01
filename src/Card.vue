@@ -5,8 +5,36 @@
     @dragend="onDragEnd"
     @dragover="onDragOver"
     @dragstart="onDragStart"
+    @mouseleave="showOptions = false"
+    @mouseenter="showOptions = true"
   >
-    {{ card.task }}
+    <div>
+      <transition name="fade">
+        <button v-if="showOptions">editar</button>
+      </transition>
+
+      <header v-if="card.labels.length">
+        <div>
+          <label v-for="label in card.labels" :key="label.type">
+            <span :style="{ background: label.color }">{{ label.type }}</span>
+          </label>
+        </div>
+
+      </header>
+
+      <div v-if="card.members.length">
+        <vue-coe-image
+          v-for="member in card.members"
+          :key="member.id"
+          :src="member.photo"
+          :alt="`${member.name}(${member.username})`"
+        />
+      </div>
+
+      <p>{{ card.title }}</p>
+
+      <footer>paradinhas do footer...</footer>
+    </div>
   </li>
 </template>
 
@@ -15,6 +43,10 @@ import { moveCards } from './services/card'
 
 export default {
   name: 'card',
+
+  components: {
+    VueCoeImage: () => import('vue-coe-image')
+  },
 
   props: {
     data: {
@@ -43,6 +75,12 @@ export default {
 
     draggingCardOver: Object,
     draggingGroupOver: Object
+  },
+
+  data () {
+    return {
+      showOptions: false
+    }
   },
 
   computed: {
@@ -85,6 +123,8 @@ export default {
     },
 
     onDragOver (e) {
+      if (this.isDraggingGroup) return
+
       this.$emit('card:dragover', this.card)
 
       const { targetCenterHorizontal, draggedOffsetTop } = this.getTargetRect(e)
@@ -124,7 +164,17 @@ export default {
 </script>
 
 <style lang="scss">
+.fade-enter-active,
+.fade-leave-active { transition: .3s ease; }
+
+.fade-enter,
+.fade-leave-active { opacity: 0; }
+
 .card {
+  position: relative;
+
+  cursor: pointer;
+
   padding: 15px;
   margin-bottom: 20px;
 
@@ -132,6 +182,58 @@ export default {
   border-radius: 5px;
 
   box-shadow: 0 1px 4px 0 rgba(192, 208, 230, 0.8);
+
+  & > div {
+    & > button {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+    }
+
+    & > header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+
+      margin-bottom: 10px;
+
+      & > div {
+        display: flex;
+
+        & > label {
+          margin-right: 5px;
+
+          & > span {
+            padding: 2px 8px;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            border-radius: 4px;
+          }
+        }
+      }
+    }
+
+    & > div {
+      display: flex;
+      margin-bottom: 10px;
+
+      & > .vue-coe-image {
+        width: 30px;
+        height: 30px;
+        margin-right: 5px;
+        border-radius: 50px;
+
+        & > .lazy-load-image { border-radius: 50px; }
+      }
+    }
+
+    & > p {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+  }
 
   &.-is-dragging-card {
     opacity: 0.6;
@@ -141,13 +243,7 @@ export default {
   }
 
   &.-is-valid-target { background: green; }
-
-  &.-is-above-center {
-    transform: translateY(10px);
-  }
-
-  &.-is-below-center {
-    transform: translateY(-10px);
-  }
+  &.-is-above-center { transform: translateY(10px); }
+  &.-is-below-center { transform: translateY(-10px); }
 }
 </style>
