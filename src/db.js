@@ -25,8 +25,17 @@ export default [
             photo: 'https://picsum.photos/30'
           }
         ],
-        title: 'tituluzin',
-        description: 'task 11'
+        title: 'tituluzin boladaum pesadaum que não é um QA',
+        description: 'task 11',
+        comments: [
+          { user: 1, date: '29/01/1989', comment: 'coe' },
+          { user: 1, date: '29/01/1989', comment: 'coe' },
+          { user: 2, date: '29/01/1989', comment: 'coe' }
+        ],
+        attachments: [
+          { img: '', date: '29/01/1989' },
+          { img: '', date: '29/01/1989' }
+        ]
       },
       {
         id: 2,
@@ -34,7 +43,9 @@ export default [
         labels: [],
         members: [],
         title: 'tituluzin',
-        description: 'task 12'
+        description: 'task 12',
+        comments: [ { user: 1, date: '', comment: 'coe' } ],
+        attachments: []
       },
       {
         id: 3,
@@ -42,7 +53,9 @@ export default [
         labels: [],
         members: [],
         title: 'tituluzin',
-        description: 'task 13'
+        description: 'task 13',
+        comments: [ { user: 1, date: '', comment: 'coe' } ],
+        attachments: []
       },
       {
         id: 4,
@@ -50,7 +63,9 @@ export default [
         labels: [],
         members: [],
         title: 'tituluzin',
-        description: 'task 14'
+        description: 'task 14',
+        comments: [ { user: 1, date: '', comment: 'coe' } ],
+        attachments: []
       },
       {
         id: 5,
@@ -58,7 +73,9 @@ export default [
         labels: [],
         members: [],
         title: 'tituluzin',
-        description: 'task 15'
+        description: 'task 15',
+        comments: [ { user: 1, date: '', comment: 'coe' } ],
+        attachments: []
       },
       {
         id: 6,
@@ -66,7 +83,9 @@ export default [
         labels: [],
         members: [],
         title: 'tituluzin',
-        description: 'task 16'
+        description: 'task 16',
+        comments: [ { user: 1, date: '', comment: 'coe' } ],
+        attachments: []
       }
     ]
   },
@@ -87,7 +106,9 @@ export default [
         labels: [],
         members: [],
         title: 'tituluzin',
-        description: 'task 31'
+        description: 'task 31',
+        comments: [ { user: 1, date: '', comment: 'coe' } ],
+        attachments: []
       },
       {
         id: 8,
@@ -95,7 +116,9 @@ export default [
         labels: [],
         members: [],
         title: 'tituluzin',
-        description: 'task 32'
+        description: 'task 32',
+        comments: [ { user: 1, date: '', comment: 'coe' } ],
+        attachments: []
       },
       {
         id: 9,
@@ -103,7 +126,9 @@ export default [
         labels: [],
         members: [],
         title: 'tituluzin',
-        description: 'task 33'
+        description: 'task 33',
+        comments: [ { user: 1, date: '', comment: 'coe' } ],
+        attachments: []
       }
     ]
   },
@@ -118,7 +143,9 @@ export default [
         labels: [],
         members: [],
         title: 'tituluzin',
-        description: 'task 41'
+        description: 'task 41',
+        comments: [ { user: 1, date: '', comment: 'coe' } ],
+        attachments: []
       },
       {
         id: 11,
@@ -126,7 +153,9 @@ export default [
         labels: [],
         members: [],
         title: 'tituluzin',
-        description: 'task 42'
+        description: 'task 42',
+        comments: [ { user: 1, date: '', comment: 'coe' } ],
+        attachments: []
       },
       {
         id: 12,
@@ -134,7 +163,9 @@ export default [
         labels: [],
         members: [],
         title: 'tituluzin',
-        description: 'task 43'
+        description: 'task 43',
+        comments: [ { user: 1, date: '', comment: 'coe' } ],
+        attachments: []
       }
     ]
   }
