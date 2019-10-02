@@ -17,12 +17,21 @@
         v-for="card of getCards(group.name)"
         :key="card.id"
         :data="data"
+
         :card="card"
         :group="group"
+
         :dragged-group="draggedGroup"
+
+        :is-top-to-bottom="isTopToBottom"
+        :is-bottom-to-top="isBottomToTop"
+
         :dragging-card-over="draggingCardOver"
         :dragging-group-over="draggingGroupOver"
+
+        :id-dragging-card="isDraggingCard"
         :is-dragging-same-group="isDraggingSameGroup"
+
         v-bind="$attrs"
         v-on="$listeners"
       >
@@ -56,6 +65,7 @@ export default {
 
     isDraggingCard: Boolean,
 
+    // isDraggingSameCard: Boolean,
     isDraggingSameGroup: Boolean,
 
     isTopToBottom: Boolean,
