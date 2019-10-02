@@ -21,6 +21,7 @@
 
       :is-top-to-bottom="isTopToBottom"
       :is-bottom-to-top="isBottomToTop"
+
       :is-dragging-same-card="isDraggingSameCard"
       :is-dragging-same-group="isDraggingSameGroup"
 
