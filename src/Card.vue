@@ -5,6 +5,7 @@
     @dragend="onDragEnd"
     @dragover="onDragOver"
     @dragstart="onDragStart"
+    @mousedown="showOptions = false"
     @mouseleave="showOptions = false"
     @mouseenter="showOptions = true"
   >
@@ -154,11 +155,10 @@ export default {
       this.$emit('set:is-above-center', isAboveCenter)
 
       this.$nextTick(() => {
-        if (this.isDraggingGroup || !this.draggingGroupOver.order) {
-          return this.setValidTarget(false)
-        }
-        if (this.isDraggingSameCard) return this.setValidTarget(false)
         if (!this.isDraggingSameGroup) return this.setValidTarget(true)
+
+        if (this.isDraggingGroup) return this.setValidTarget(false)
+        if (this.isDraggingSameCard) return this.setValidTarget(false)
         if (this.isTopToBottom && this.isAboveCenter) return this.setValidTarget(false)
         if (this.isBottomToTop && !this.isAboveCenter) return this.setValidTarget(false)
 
