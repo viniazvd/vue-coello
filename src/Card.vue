@@ -226,6 +226,7 @@ export default {
         display: flex;
 
         & > label {
+          cursor: pointer;
           margin-right: 5px;
 
           & > span {
