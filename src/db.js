@@ -42,7 +42,7 @@ export default [
         order: 2,
         labels: [],
         members: [],
-        title: 'tituluzin',
+        title: 'tituluzin 12',
         description: 'task 12',
         comments: [ { user: 1, date: '', comment: 'coe' } ],
         attachments: []
@@ -52,7 +52,7 @@ export default [
         order: 3,
         labels: [],
         members: [],
-        title: 'tituluzin',
+        title: 'tituluzin 13',
         description: 'task 13',
         comments: [ { user: 1, date: '', comment: 'coe' } ],
         attachments: []
@@ -62,7 +62,7 @@ export default [
         order: 4,
         labels: [],
         members: [],
-        title: 'tituluzin',
+        title: 'tituluzin 14',
         description: 'task 14',
         comments: [ { user: 1, date: '', comment: 'coe' } ],
         attachments: []
@@ -72,7 +72,7 @@ export default [
         order: 5,
         labels: [],
         members: [],
-        title: 'tituluzin',
+        title: 'tituluzin 15',
         description: 'task 15',
         comments: [ { user: 1, date: '', comment: 'coe' } ],
         attachments: []
@@ -82,7 +82,7 @@ export default [
         order: 6,
         labels: [],
         members: [],
-        title: 'tituluzin',
+        title: 'tituluzin 16',
         description: 'task 16',
         comments: [ { user: 1, date: '', comment: 'coe' } ],
         attachments: []
@@ -105,7 +105,7 @@ export default [
         order: 1,
         labels: [],
         members: [],
-        title: 'tituluzin',
+        title: 'tituluzin 31',
         description: 'task 31',
         comments: [ { user: 1, date: '', comment: 'coe' } ],
         attachments: []
@@ -115,7 +115,7 @@ export default [
         order: 2,
         labels: [],
         members: [],
-        title: 'tituluzin',
+        title: 'tituluzin 32',
         description: 'task 32',
         comments: [ { user: 1, date: '', comment: 'coe' } ],
         attachments: []
@@ -125,7 +125,7 @@ export default [
         order: 3,
         labels: [],
         members: [],
-        title: 'tituluzin',
+        title: 'tituluzin 33',
         description: 'task 33',
         comments: [ { user: 1, date: '', comment: 'coe' } ],
         attachments: []
@@ -142,7 +142,7 @@ export default [
         order: 1,
         labels: [],
         members: [],
-        title: 'tituluzin',
+        title: 'tituluzin 41',
         description: 'task 41',
         comments: [ { user: 1, date: '', comment: 'coe' } ],
         attachments: []
@@ -152,7 +152,7 @@ export default [
         order: 2,
         labels: [],
         members: [],
-        title: 'tituluzin',
+        title: 'tituluzin 42',
         description: 'task 42',
         comments: [ { user: 1, date: '', comment: 'coe' } ],
         attachments: []
@@ -162,7 +162,7 @@ export default [
         order: 3,
         labels: [],
         members: [],
-        title: 'tituluzin',
+        title: 'tituluzin 43',
         description: 'task 43',
         comments: [ { user: 1, date: '', comment: 'coe' } ],
         attachments: []
