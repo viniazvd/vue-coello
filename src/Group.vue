@@ -22,6 +22,7 @@
         :dragged-group="draggedGroup"
         :dragging-card-over="draggingCardOver"
         :dragging-group-over="draggingGroupOver"
+        :is-dragging-same-group="isDraggingSameGroup"
         v-bind="$attrs"
         v-on="$listeners"
       >
@@ -55,7 +56,6 @@ export default {
 
     isDraggingCard: Boolean,
 
-    isDraggingSameCard: Boolean,
     isDraggingSameGroup: Boolean,
 
     isTopToBottom: Boolean,
@@ -172,7 +172,7 @@ export default {
 
     width: 100%;
     cursor: grab;
-    padding: 10px 0;
+    padding: 10px 0 20px 0;
 
     & > .group-name { color: red; }
     & > .actions {
