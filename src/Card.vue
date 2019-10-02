@@ -157,10 +157,11 @@ export default {
       this.$nextTick(() => {
         if (!this.isDraggingSameGroup) return this.setValidTarget(true)
 
-        if (this.isDraggingGroup) return this.setValidTarget(false)
-        if (this.isDraggingSameCard) return this.setValidTarget(false)
         if (this.isTopToBottom && this.isAboveCenter) return this.setValidTarget(false)
         if (this.isBottomToTop && !this.isAboveCenter) return this.setValidTarget(false)
+
+        if (this.isDraggingGroup) return this.setValidTarget(false)
+        if (this.isDraggingSameCard) return this.setValidTarget(false)
 
         return this.setValidTarget(true)
       })
@@ -202,6 +203,8 @@ export default {
 
   background: #FFF;
   border-radius: 5px;
+
+  transition: transform .3s;
 
   box-shadow: 0 1px 4px 0 rgba(192, 208, 230, 0.8);
 
