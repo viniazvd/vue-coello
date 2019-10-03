@@ -49,7 +49,7 @@ export default {
   name: 'board',
 
   components: {
-    Group: () => import('./Group')
+    Group: () => import('./components/Core/Group')
   },
 
   data () {

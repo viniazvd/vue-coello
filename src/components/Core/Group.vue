@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import { moveGroups } from './services/group'
+import { moveGroups } from '../../services/group'
 
 export default {
   name: 'group',

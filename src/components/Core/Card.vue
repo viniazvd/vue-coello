@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import { moveCards } from './services/card'
+import { moveCards } from '../../services/card'
 
 export default {
   name: 'card',
