@@ -8,10 +8,16 @@
     @mousedown="showOptions = false"
     @mouseleave="showOptions = false"
     @mouseenter="showOptions = true"
+    @click="$emit('set:show-card')"
   >
     <div>
       <transition name="fade">
-        <button v-if="showOptions">editar</button>
+        <button
+          v-if="showOptions"
+          @click.stop="$emit('edit')"
+        >
+          editar
+        </button>
       </transition>
 
       <header v-if="card.labels.length">
@@ -208,6 +214,11 @@ export default {
 
   box-shadow: 0 1px 4px 0 rgba(192, 208, 230, 0.8);
 
+  &:hover {
+    transform: scale(1.02);
+    background: rgba(0, 0, 0, 0.1);
+  }
+
   & > div {
     & > button {
       position: absolute;
@@ -271,8 +282,8 @@ export default {
 
   &.-is-dragging-card {
     opacity: 0.6;
-    box-shadow: none;
     cursor: grabbing;
+    box-shadow: none;
     background: rgba(0, 0, 0, 0.2);
   }
 
