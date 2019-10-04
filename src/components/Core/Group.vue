@@ -6,6 +6,7 @@
     @dragend="onDragEnd"
     @dragstart="onDragStart"
     @dragover.prevent="onDragOver"
+    v-on="$listeners"
   >
     <header>
       <span class="group-name">{{ group.name }}</span>
