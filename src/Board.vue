@@ -7,6 +7,8 @@
       :data="data"
       :group="group"
 
+      @set:show-card="x => showCard = true"
+
       :is-valid-target="isValidTarget"
       :is-above-center="isAboveCenter"
 
@@ -39,6 +41,13 @@
       @card:dragover="card => draggingCardOver = card"
     >
     </group>
+
+    <c-modal
+      :is-opened="showCard"
+      @close="x => showCard = false"
+    >
+      coedasd sadasdasd asd as
+    </c-modal>
   </main>
 </template>
 
@@ -49,12 +58,15 @@ export default {
   name: 'board',
 
   components: {
-    Group: () => import('./components/Core/Group')
+    Group: () => import('./components/Core/Group'),
+    CModal: () => import('./components/Base/Modal')
   },
 
   data () {
     return {
       data: data,
+
+      showCard: false,
 
       isValidTarget: false,
       isAboveCenter: false,
