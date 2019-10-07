@@ -10,7 +10,8 @@
 
           <div class="header">
             <div class="title">
-              <div>{{ title }}</div>
+              <div>{{ cardTitle }}</div>
+              <div>{{ groupTitle }}</div>
             </div>
 
             <div class="actions">
@@ -28,87 +29,33 @@
 </template>
 
 <script>
-import COverlay from './Overlay'
-
-const ALIGNMENTS = ['right', 'left', 'center', 'bottom']
-const includes = values => value => values.includes(value)
-const isAlignment = includes(ALIGNMENTS)
-
 export default {
   name: 'Modal',
 
-  components: { COverlay },
+  components: {
+    COverlay: () => import('./Overlay')
+  },
 
   props: {
-    /**
-     * Whether to show or not the modal.
-     */
     isOpened: {
       type: Boolean,
       required: true
     },
 
-    /**
-     * The title of the modal (diplayed in the header section by default).
-     */
-    title: {
+    cardTitle: {
       type: String,
       default: ''
     },
 
-    /**
-     * Positioning of the modal on the screen,
-     * one of: ['right', 'left', 'center', 'bottom].
-     */
-    position: {
+    groupTitle: {
       type: String,
-      default: 'center',
-      validator: isAlignment
-    },
-
-    /**
-     * Props to pass to the default CTitle component displayed
-     * in the header of the modal.
-     */
-    titleProps: {
-      type: Object,
-      default: () => ({ })
-    },
-
-    /**
-     * Set the color of the action buttons displayed
-     * in the header of the modal.
-     */
-    actionsColor: {
-      type: String,
-      validator: color => ['primary', 'success', 'error'].includes(color),
-      default: () => 'primary'
-    },
-
-    /**
-     * Disables the modal actions.
-     */
-    disabled: Boolean,
-
-    /**
-     * Removes the close button.
-     */
-    noClose: Boolean,
-
-    /**
-     * Removes the header section from the modal.
-     */
-    noHeader: Boolean,
-
-    /**
-     * Makes the modal fullscreen
-     */
-    fullscreen: Boolean
+      default: ''
+    }
   },
 
   computed: {
     classes () {
-      return [ 'wrapper', `-${this.position}` ]
+      return [ 'wrapper', '-center' ]
     }
   },
 
@@ -143,7 +90,6 @@ export default {
     },
 
     onClickOutside () {
-      console.log('dasd')
       this.emit()
     }
   },
@@ -187,26 +133,7 @@ export default {
 
   overflow-y: auto;
 
-  &.-right > .modal { align-self: flex-end; }
-  &.-left > .modal { align-self: flex-start; }
-  &.-center, &.-bottom { align-items: center; }
-
-  &.-fullscreen {
-    overflow-y: hidden;
-
-    & > .modal {
-      width: calc(1024px - 130px);
-      max-width: calc(100% - 130px);
-
-      height: 100vh;
-      top: 0px;
-
-      border-radius: 0;
-      margin: 0;
-
-      // @include responsive (xs-mobile, mobile) { max-width: 100vw; }
-    }
-  }
+  &.-center { align-items: center; }
 
   & > .modal {
     top: 90px;
