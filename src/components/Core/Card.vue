@@ -20,16 +20,16 @@
         </button>
       </transition>
 
-      <header v-if="card.labels.length">
-        <div>
-          <label v-for="label in card.labels" :key="label.type">
-            <span :style="{ background: label.color }">{{ label.type }}</span>
-          </label>
-        </div>
-
+      <header v-if="card.tags.length" class="tags">
+        <c-tag
+          v-for="tag in card.tags"
+          :key="tag.type"
+          :tag="tag"
+          :size="2"
+        />
       </header>
 
-      <div v-if="card.members.length">
+      <div v-if="card.members.length" class="images">
         <vue-coe-image
           v-for="member in card.members"
           :key="member.id"
@@ -38,13 +38,13 @@
         />
       </div>
 
-      <p>{{ card.title }}</p>
+      <p class="title">{{ card.title }}</p>
 
-      <footer>
+      <footer class="footer">
         <div v-if="false">watch</div>
 
-        <div v-if="card.comments.length">
-          <span>{{ getComments(card) }}</span>
+        <div v-if="card.activitys.length">
+          <span>{{ getActivitys(card) }}</span>
         </div>
 
         <div v-if="card.attachments.length">
@@ -62,7 +62,8 @@ export default {
   name: 'card',
 
   components: {
-    VueCoeImage: () => import('vue-coe-image')
+    VueCoeImage: () => import('vue-coe-image'),
+    CTag: () => import('../Base/CTag')
   },
 
   props: {
@@ -116,8 +117,8 @@ export default {
   },
 
   methods: {
-    getComments ({ comments }) {
-      const num = comments.length
+    getActivitys ({ activitys }) {
+      const num = activitys.length
 
       return `${num} ${num === 1 ? 'comment' : 'comments'}`
     },
@@ -226,32 +227,15 @@ export default {
       right: 10px;
     }
 
-    & > header {
+    & > .tags {
       display: flex;
       align-items: baseline;
-      justify-content: space-between;
 
       margin-bottom: 10px;
-
-      & > div {
-        display: flex;
-
-        & > label {
-          cursor: pointer;
-          margin-right: 5px;
-
-          & > span {
-            padding: 2px 8px;
-            color: white;
-            font-size: 12px;
-            font-weight: bold;
-            border-radius: 4px;
-          }
-        }
-      }
+      max-width: calc(100% - 30px);
     }
 
-    & > div {
+    & > .images {
       display: flex;
       margin-bottom: 10px;
 
@@ -265,13 +249,13 @@ export default {
       }
     }
 
-    & > p {
+    & > .title {
       font-size: 16px;
       font-weight: bold;
       margin-bottom: 10px;
     }
 
-    & > footer {
+    & > .footer {
       display: flex;
 
       & > div {
