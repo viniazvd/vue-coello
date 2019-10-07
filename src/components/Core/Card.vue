@@ -8,7 +8,7 @@
     @mousedown="showOptions = false"
     @mouseleave="showOptions = false"
     @mouseenter="showOptions = true"
-    @click="$emit('set:show-card')"
+    @click="$emit('click:card', { card, group: group.name })"
   >
     <div>
       <transition name="fade">
