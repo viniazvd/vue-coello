@@ -44,11 +44,12 @@
 
     <c-modal
       :is-opened="showCard"
+      card-icon="id-card"
       :card-title="clickedCard.title"
       :group-title="clickedCard.group"
       @close="x => showCard = false"
     >
-      coedasd sadasdasd asd as
+      <info :card="clickedCard" />
     </c-modal>
   </main>
 </template>
@@ -61,7 +62,8 @@ export default {
 
   components: {
     Group: () => import('./components/Core/Group'),
-    CModal: () => import('./components/Base/Modal')
+    CModal: () => import('./components/Base/CModal'),
+    Info: () => import('./components/Core/Info')
   },
 
   data () {
