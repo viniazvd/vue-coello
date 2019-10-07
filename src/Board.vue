@@ -7,7 +7,7 @@
       :data="data"
       :group="group"
 
-      @set:show-card="x => showCard = true"
+      @click:card="setCard"
 
       :is-valid-target="isValidTarget"
       :is-above-center="isAboveCenter"
@@ -44,6 +44,8 @@
 
     <c-modal
       :is-opened="showCard"
+      :card-title="clickedCard.title"
+      :group-title="clickedCard.group"
       @close="x => showCard = false"
     >
       coedasd sadasdasd asd as
@@ -67,6 +69,7 @@ export default {
       data: data,
 
       showCard: false,
+      clickedCard: {},
 
       isValidTarget: false,
       isAboveCenter: false,
@@ -101,6 +104,11 @@ export default {
   },
 
   methods: {
+    setCard ({ card, group }) {
+      this.showCard = true
+      this.clickedCard = { ...card, group }
+    },
+
     getCards (groupName) {
       return this.data.find(({ name }) => name === groupName).cards
     },
